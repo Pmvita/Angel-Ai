@@ -1,0 +1,34 @@
+{
+  "name": "angel-ai-clone",
+  "private": true,
+  "description": "angel AI clone — invisible real-time AI assistant for interviews and meetings (Listen, Vision, Ask, Notes) with extra features",
+  "version": "2.0.0",
+  "packageManager": "npm@10.5.0",
+  "workspaces": [
+    "apps/web",
+    "apps/electron",
+    "apps/server",
+    "packages/ui",
+    "packages/types",
+    "packages/config"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "electron": "turbo run dev --filter=electron",
+    "web": "turbo run dev --filter=web",
+    "server": "turbo run dev --filter=server"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.0",
+    "turbo": "^2.0.6",
+    "typescript": "^5.5.0"
+  }
+}
+
