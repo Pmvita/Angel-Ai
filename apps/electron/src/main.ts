@@ -1,10 +1,33 @@
 import { app, BrowserWindow, ipcMain, globalShortcut, Tray, nativeImage, screen, shell, desktopCapturer } from "electron";
 import path from "node:path";
+import { spawn, ChildProcess } from "node:child_process";
 import Store from "electron-store";
 import { autoUpdater } from "electron-updater";
 import { AppSettings } from "@angel/types";
 
 const store = new Store<{ settings: Partial<AppSettings> }>({ name: "angel-settings" });
+
+let serverProcess: ChildProcess | null = null;
+
+function startServer() {
+  if (!app.isPackaged) return; // dev: run server separately
+  const serverEntry = path.join(process.resourcesPath, "app.asar.unpacked", "dist", "server", "apps", "server", "src", "index.js");
+  const altEntry = path.join(__dirname, "dist", "server", "apps", "server", "src", "index.js");
+  const entry = require("node:fs").existsSync(serverEntry) ? serverEntry : altEntry;
+  const dataDir = path.join(app.getPath("userData"), "data");
+  require("node:fs").mkdirSync(dataDir, { recursive: true });
+  serverProcess = spawn(process.execPath, [entry], {
+    env: { ...process.env, ELECTRON_RUN_AS_NODE: "1", PORT: "4000", angel_DATA_DIR: dataDir },
+    stdio: "ignore",
+    detached: false,
+  });
+  serverProcess.on("exit", () => { serverProcess = null; });
+}
+
+function stopServer() {
+  serverProcess?.kill();
+  serverProcess = null;
+}
 
 let mainWindow: BrowserWindow | null = null;
 let overlayWindow: BrowserWindow | null = null;
@@ -74,7 +97,10 @@ function createTray() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  startServer();
+  // give bundled server a moment to bind
+  await new Promise((r) => setTimeout(r, 1500));
   createMainWindow();
   createOverlayWindow();
   createTray();
@@ -95,6 +121,7 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
+  stopServer();
   if (process.platform !== "darwin") app.quit();
 });
 

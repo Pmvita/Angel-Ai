@@ -37,6 +37,7 @@
       "node_modules/**/*",
       "package.json"
     ],
+    "asarUnpack": ["dist/server/**/*"],
     "extraMetadata": {
       "main": "dist/main.js"
     }
