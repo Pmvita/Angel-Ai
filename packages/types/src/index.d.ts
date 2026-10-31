@@ -11,23 +11,23 @@ export declare const SessionSchema: z.ZodObject<{
     windowTitle: z.ZodDefault<z.ZodString>;
     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
 }, "strip", z.ZodTypeAny, {
-    status: "idle" | "listening" | "analyzing" | "paused" | "stopped";
     id: string;
     title: string;
-    startedAt: string;
+    status: "idle" | "listening" | "analyzing" | "paused" | "stopped";
     app: string;
+    startedAt: string;
     windowTitle: string;
-    endedAt?: string | undefined;
     settings?: Record<string, any> | undefined;
+    endedAt?: string | undefined;
 }, {
-    status: "idle" | "listening" | "analyzing" | "paused" | "stopped";
     id: string;
     title: string;
+    status: "idle" | "listening" | "analyzing" | "paused" | "stopped";
     startedAt: string;
-    endedAt?: string | undefined;
-    app?: string | undefined;
-    windowTitle?: string | undefined;
     settings?: Record<string, any> | undefined;
+    app?: string | undefined;
+    endedAt?: string | undefined;
+    windowTitle?: string | undefined;
 }>;
 export type Session = z.infer<typeof SessionSchema>;
 export declare const SpeakerSchema: z.ZodEnum<["system", "user", "other", "unknown"]>;
@@ -44,9 +44,9 @@ export declare const TranscriptSegmentSchema: z.ZodObject<{
     timestamp: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    sessionId: string;
     speaker: "unknown" | "system" | "user" | "other";
     text: string;
+    sessionId: string;
     startTime: number;
     endTime: number;
     isHighlighted: boolean;
@@ -54,9 +54,9 @@ export declare const TranscriptSegmentSchema: z.ZodObject<{
     confidence?: number | undefined;
 }, {
     id: string;
-    sessionId: string;
     speaker: "unknown" | "system" | "user" | "other";
     text: string;
+    sessionId: string;
     startTime: number;
     endTime: number;
     timestamp: string;
@@ -77,26 +77,26 @@ export declare const VisionAnalysisSchema: z.ZodObject<{
     timestamp: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    sessionId: string;
-    timestamp: string;
-    screenshotId: string;
-    provider: string;
     model: string;
     summary: string;
     keyPoints: string[];
     actionItems: string[];
-    detectedText?: string | undefined;
-}, {
-    id: string;
     sessionId: string;
     timestamp: string;
     screenshotId: string;
+    provider: string;
+    detectedText?: string | undefined;
+}, {
+    id: string;
     summary: string;
     keyPoints: string[];
     actionItems: string[];
-    provider?: string | undefined;
+    sessionId: string;
+    timestamp: string;
+    screenshotId: string;
     model?: string | undefined;
     detectedText?: string | undefined;
+    provider?: string | undefined;
 }>;
 export type VisionAnalysis = z.infer<typeof VisionAnalysisSchema>;
 export declare const QuestionSchema: z.ZodObject<{
@@ -109,23 +109,23 @@ export declare const QuestionSchema: z.ZodObject<{
     status: z.ZodDefault<z.ZodEnum<["pending", "answered", "error"]>>;
     timestamp: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    status: "pending" | "answered" | "error";
     id: string;
-    sessionId: string;
+    status: "answered" | "error" | "pending";
+    model: string;
     text: string;
+    sessionId: string;
     timestamp: string;
     provider: string;
-    model: string;
     answer?: string | undefined;
 }, {
     id: string;
-    sessionId: string;
     text: string;
+    sessionId: string;
     timestamp: string;
-    status?: "pending" | "answered" | "error" | undefined;
-    provider?: string | undefined;
-    model?: string | undefined;
+    status?: "answered" | "error" | "pending" | undefined;
     answer?: string | undefined;
+    model?: string | undefined;
+    provider?: string | undefined;
 }>;
 export type Question = z.infer<typeof QuestionSchema>;
 export declare const NoteSchema: z.ZodObject<{
@@ -138,8 +138,8 @@ export declare const NoteSchema: z.ZodObject<{
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    type: "auto" | "manual";
     id: string;
+    type: "auto" | "manual";
     sessionId: string;
     content: string;
     pinned: boolean;
@@ -147,8 +147,8 @@ export declare const NoteSchema: z.ZodObject<{
     createdAt: string;
     updatedAt: string;
 }, {
-    type: "auto" | "manual";
     id: string;
+    type: "auto" | "manual";
     sessionId: string;
     content: string;
     createdAt: string;
@@ -168,18 +168,18 @@ export declare const ExportJobSchema: z.ZodObject<{
     error: z.ZodOptional<z.ZodString>;
     createdAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    status: "queued" | "processing" | "completed" | "failed";
     id: string;
+    status: "queued" | "processing" | "completed" | "failed";
     sessionId: string;
     createdAt: string;
-    format: "pdf" | "markdown" | "txt" | "json" | "email";
+    format: "markdown" | "pdf" | "txt" | "json" | "email";
     error?: string | undefined;
     url?: string | undefined;
 }, {
     id: string;
     sessionId: string;
     createdAt: string;
-    format: "pdf" | "markdown" | "txt" | "json" | "email";
+    format: "markdown" | "pdf" | "txt" | "json" | "email";
     status?: "queued" | "processing" | "completed" | "failed" | undefined;
     error?: string | undefined;
     url?: string | undefined;
@@ -205,8 +205,8 @@ export declare const AppSettingsSchema: z.ZodObject<{
     localStorageEnabled: z.ZodDefault<z.ZodBoolean>;
     exportDefaultFormat: z.ZodDefault<z.ZodEnum<["pdf", "markdown", "txt", "json", "email"]>>;
 }, "strip", z.ZodTypeAny, {
-    provider: "openai" | "custom" | "anthropic" | "google" | "local" | "openrouter" | "lmstudio";
     model: string;
+    provider: "openai" | "anthropic" | "google" | "local" | "custom" | "openrouter" | "lmstudio";
     temperature: number;
     maxTokens: number;
     systemPrompt: string;
@@ -218,12 +218,12 @@ export declare const AppSettingsSchema: z.ZodObject<{
     globalShortcut: string;
     captureIntervalMs: number;
     localStorageEnabled: boolean;
-    exportDefaultFormat: "pdf" | "markdown" | "txt" | "json" | "email";
+    exportDefaultFormat: "markdown" | "pdf" | "txt" | "json" | "email";
     apiKey?: string | undefined;
     baseUrl?: string | undefined;
 }, {
-    provider?: "openai" | "custom" | "anthropic" | "google" | "local" | "openrouter" | "lmstudio" | undefined;
     model?: string | undefined;
+    provider?: "openai" | "anthropic" | "google" | "local" | "custom" | "openrouter" | "lmstudio" | undefined;
     apiKey?: string | undefined;
     baseUrl?: string | undefined;
     temperature?: number | undefined;
@@ -237,7 +237,7 @@ export declare const AppSettingsSchema: z.ZodObject<{
     globalShortcut?: string | undefined;
     captureIntervalMs?: number | undefined;
     localStorageEnabled?: boolean | undefined;
-    exportDefaultFormat?: "pdf" | "markdown" | "txt" | "json" | "email" | undefined;
+    exportDefaultFormat?: "markdown" | "pdf" | "txt" | "json" | "email" | undefined;
 }>;
 export type AppSettings = z.infer<typeof AppSettingsSchema>;
 export declare const TranslationSegmentSchema: z.ZodObject<{
@@ -251,20 +251,20 @@ export declare const TranslationSegmentSchema: z.ZodObject<{
     timestamp: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    sessionId: string;
-    timestamp: string;
-    sourceSegmentId: string;
-    sourceText: string;
     translatedText: string;
     sourceLanguage: string;
     targetLanguage: string;
-}, {
-    id: string;
     sessionId: string;
     timestamp: string;
     sourceSegmentId: string;
     sourceText: string;
+}, {
+    id: string;
     translatedText: string;
+    sessionId: string;
+    timestamp: string;
+    sourceSegmentId: string;
+    sourceText: string;
     sourceLanguage?: string | undefined;
     targetLanguage?: string | undefined;
 }>;
@@ -277,14 +277,14 @@ export declare const TeamMemberSchema: z.ZodObject<{
     joinedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    email: string;
     name: string;
+    email: string;
     role: "owner" | "admin" | "member" | "viewer";
     joinedAt: string;
 }, {
     id: string;
-    email: string;
     name: string;
+    email: string;
     joinedAt: string;
     role?: "owner" | "admin" | "member" | "viewer" | undefined;
 }>;
@@ -320,16 +320,16 @@ export declare const ActivityEventSchema: z.ZodObject<{
     metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
     timestamp: z.ZodString;
 }, "strip", z.ZodTypeAny, {
+    id: string;
     message: string;
     type: string;
-    id: string;
     timestamp: string;
     sessionId?: string | undefined;
     metadata?: Record<string, any> | undefined;
 }, {
+    id: string;
     message: string;
     type: string;
-    id: string;
     timestamp: string;
     sessionId?: string | undefined;
     metadata?: Record<string, any> | undefined;

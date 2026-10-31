@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, globalShortcut, Tray, nativeImage, screen, shell } from "electron";
+import { app, BrowserWindow, ipcMain, globalShortcut, Tray, nativeImage, screen, shell, desktopCapturer } from "electron";
 import path from "node:path";
 import Store from "electron-store";
 import { AppSettings } from "@angel/types";
@@ -21,8 +21,9 @@ function createMainWindow() {
     },
   });
 
-  if (process.env.VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
+  if (process.env.NEXT_DEV_SERVER_URL || process.env.NODE_ENV === "development") {
+    const url = process.env.NEXT_DEV_SERVER_URL || "http://localhost:3001";
+    mainWindow.loadURL(url);
   } else {
     mainWindow.loadFile(path.join(__dirname, "../web/out/index.html"));
   }
@@ -49,9 +50,9 @@ function createOverlayWindow() {
     },
   });
 
-  const url = process.env.VITE_DEV_SERVER_URL
-    ? `${process.env.VITE_DEV_SERVER_URL}/overlay`
-    : `file://${path.join(__dirname, "../web/out/overlay/index.html")}`;
+  const isDev = !!(process.env.NEXT_DEV_SERVER_URL || process.env.NODE_ENV === "development");
+  const baseUrl = process.env.NEXT_DEV_SERVER_URL || "http://localhost:3001";
+  const url = isDev ? baseUrl : `file://${path.join(__dirname, "../web/out/index.html")}`;
   overlayWindow.loadURL(url);
 
   overlayWindow.on("blur", () => {
@@ -106,11 +107,14 @@ ipcMain.handle("toggle-overlay", () => {
   return { visible: false };
 });
 ipcMain.handle("capture-screen", async () => {
-  const [display] = screen.getAllDisplays();
-  const thumbnail = await overlayWindow?.capturePage();
-  if (!thumbnail) return null;
-  const png = thumbnail.toPNG();
-  return { png, size: { width: display.size.width, height: display.size.height } };
+  const sources = await desktopCapturer.getSources({
+    types: ["screen"],
+    thumbnailSize: { width: 1280, height: 720 },
+  });
+  const primary = sources[0];
+  if (!primary) return null;
+  const png = primary.thumbnail.toPNG();
+  return { png: png.toString("base64"), size: primary.thumbnail.getSize() };
 });
 ipcMain.handle("open-external", (_event, url: string) => shell.openExternal(url));
 

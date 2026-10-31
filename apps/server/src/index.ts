@@ -9,6 +9,7 @@ import { LLMService } from "./services/llm";
 import { exportService } from "./services/export";
 import { emailExportService } from "./services/email";
 import { TranslationService } from "./services/translation";
+import { VisionService } from "./services/vision";
 import { AppSettings } from "@angel/types";
 
 const app = express();
@@ -52,6 +53,7 @@ let llm = new LLMService({
 });
 
 const translation = new TranslationService(llm);
+const visionService = new VisionService(llm);
 
 function persistSettings(next: AppSettings) {
   settings = next;
@@ -77,6 +79,24 @@ app.post("/api/sessions", (req, res) => {
   const s = sessionService.create(title || "Untitled Session", appName, windowTitle);
   io.emit("session.created", { sessionId: s.id, status: s.status });
   sessionService.addActivityEvent(s.id, "session.started", `Session "${s.title}" started`, { app: appName });
+
+  // Wire real-time transcription pipeline: persist segments and broadcast over socket.io
+  transcription.stop();
+  transcription.start(s.id, (seg: any) => {
+    try {
+      sessionService.addTranscriptSegment(s.id, {
+        speaker: seg.speaker,
+        text: seg.text,
+        startTime: seg.startTime,
+        endTime: seg.endTime,
+        confidence: seg.confidence,
+        isHighlighted: seg.isHighlighted,
+        timestamp: seg.timestamp,
+      });
+    } catch {}
+    io.emit("transcript", { ...seg, sessionId: s.id });
+  });
+
   res.json(s);
 });
 app.post("/api/sessions/:id/stop", (req, res) => {
@@ -96,12 +116,35 @@ app.post("/api/settings", (req, res) => {
 // Transcript
 app.get("/api/sessions/:id/transcript", (req, res) => res.json(sessionService.getTranscript(req.params.id)));
 
-// Vision
 app.get("/api/sessions/:id/vision", (req, res) => {
   const rows = store.query(COLLECTIONS.VISION, (r: any) => r.session_id === req.params.id).sort(
     (a: any, b: any) => (a.timestamp || "").localeCompare(b.timestamp || "")
   );
   res.json(rows);
+});
+
+app.post("/api/vision", async (req, res) => {
+  const { sessionId, imageBase64, screenshotId } = req.body || {};
+  if (!sessionId || !imageBase64) return res.status(400).json({ error: "Missing sessionId or imageBase64" });
+  try {
+    const sid = screenshotId || crypto.randomUUID();
+    const analysis = await visionService.analyze(imageBase64, sessionId, sid);
+    sessionService.addVisionAnalysis(sessionId, {
+      screenshotId: sid,
+      provider: analysis.provider,
+      model: analysis.model,
+      summary: analysis.summary,
+      keyPoints: analysis.keyPoints,
+      actionItems: analysis.actionItems,
+      detectedText: analysis.detectedText,
+      timestamp: analysis.timestamp,
+    });
+    io.emit("vision", analysis);
+    sessionService.addActivityEvent(sessionId, "vision", `Vision analyzed: ${analysis.summary.slice(0, 80)}`);
+    res.json(analysis);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // Ask

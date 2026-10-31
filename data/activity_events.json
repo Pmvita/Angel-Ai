@@ -1,0 +1,10 @@
+{
+  "5e5b9ffe-7c7f-431f-b829-113bb0b130e5": {
+    "id": "5e5b9ffe-7c7f-431f-b829-113bb0b130e5",
+    "sessionId": "da8de76d-2104-48f1-81e1-509926cfaf85",
+    "type": "session.started",
+    "message": "Session \"smoke\" started",
+    "metadata": "{\"app\":\"browser\"}",
+    "timestamp": "2026-10-31T20:02:31.777Z"
+  }
+}

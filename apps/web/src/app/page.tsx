@@ -5,6 +5,7 @@ import { Mic, Eye, MessageSquare, FileText, Settings, X, Minimize, Download, Mai
 import { Button, Card, Toggle } from "@angel/ui";
 import { Panel, Badge } from "@angel/ui";
 import type { SessionStatus, TranscriptSegment, VisionAnalysis, Question, Note, AppSettings } from "@angel/types";
+import { io } from "socket.io-client";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
 
@@ -54,44 +55,39 @@ export default function OverlayPage() {
   const sessionRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket(`${API_BASE.replace(/^http/, "ws")}/ws`);
-    wsRef.current = ws;
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: "join", payload: { app: "browser" } }));
-    };
-    ws.onmessage = (event) => {
-      try {
-        const msg = JSON.parse(event.data);
-        if (msg.type === "session.created") {
-          sessionRef.current = msg.payload.sessionId;
-          setStatus("listening");
-        }
-        if (msg.type === "transcript") {
-          setTranscript((prev) => [...prev, msg.payload]);
-          if (settings.realtimeTranslation && msg.payload.text) {
-            fetch(`${API_BASE}/api/translate`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                sessionId: msg.payload.sessionId || sessionRef.current,
-                sourceSegmentId: msg.payload.id,
-                sourceText: msg.payload.text,
-                sourceLanguage: settings.language,
-                targetLanguage: targetLanguage,
-              }),
-            }).then((r) => r.json()).then((t) => {
-              setTranslations((prev) => [t, ...prev].slice(0, 50));
-            });
-          }
-        }
-        if (msg.type === "vision") setVision(msg.payload);
-        if (msg.type === "question.answered") setQuestions((prev) => [...prev, msg.payload]);
-        if (msg.type === "note.created") setNotes((prev) => [msg.payload, ...prev]);
-        if (msg.type === "status") setStatus(msg.payload.status);
-        if (msg.type === "kill-switch") setSettings((s) => ({ ...s, killSwitchEnabled: msg.payload.enabled }));
-      } catch {}
-    };
-    return () => ws.close();
+    const socket = io(API_BASE, { transports: ["websocket", "polling"] });
+    wsRef.current = socket as any;
+    socket.on("connect", () => {
+      socket.emit("join", { app: "browser" });
+    });
+    socket.on("session.created", (data: any) => {
+      sessionRef.current = data.sessionId;
+      setStatus("listening");
+    });
+    socket.on("transcript", (seg: any) => {
+      setTranscript((prev) => [...prev, seg]);
+      if (settings.realtimeTranslation && seg.text) {
+        fetch(`${API_BASE}/api/translate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId: seg.sessionId || sessionRef.current,
+            sourceSegmentId: seg.id,
+            sourceText: seg.text,
+            sourceLanguage: settings.language,
+            targetLanguage: targetLanguage,
+          }),
+        }).then((r) => r.json()).then((t) => {
+          setTranslations((prev) => [t, ...prev].slice(0, 50));
+        });
+      }
+    });
+    socket.on("vision", (v: any) => setVision(v));
+    socket.on("question.answered", (q: any) => setQuestions((prev) => [...prev, q]));
+    socket.on("note.created", (n: any) => setNotes((prev) => [n, ...prev]));
+    socket.on("status", (d: any) => setStatus(d.status));
+    socket.on("kill-switch", (d: any) => setSettings((s) => ({ ...s, killSwitchEnabled: d.enabled })));
+    return () => { socket.disconnect(); };
   }, [settings.realtimeTranslation, settings.language, targetLanguage]);
 
   useEffect(() => {
@@ -109,24 +105,47 @@ export default function OverlayPage() {
     if (status === "idle" || status === "stopped") {
       const res = await fetch(`${API_BASE}/api/sessions`, { method: "POST", body: JSON.stringify({ app: "browser" }) });
       const data = await res.json();
-      sessionRef.current = data.sessionId;
+      sessionRef.current = data.id;
       setStatus("listening");
+      // Client-side speech capture (Web Speech API) -> inject into server pipeline
+      const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SR) {
+        const rec = new SR();
+        rec.continuous = true;
+        rec.interimResults = false;
+        rec.lang = settings.language || "en-US";
+        rec.onresult = (e: any) => {
+          const last = e.results[e.results.length - 1];
+          if (last && last.isFinal) {
+            const text = last[0].transcript.trim();
+            if (text && sessionRef.current && wsRef.current) {
+              (wsRef.current as any).emit("transcript.inject", { sessionId: sessionRef.current, speaker: "other", text });
+            }
+          }
+        };
+        rec.onerror = () => {};
+        rec.start();
+        (window as any).__angelRec = rec;
+      }
     } else if (status === "listening") {
       await fetch(`${API_BASE}/api/sessions/${sessionRef.current}/stop`, { method: "POST" });
+      try { (window as any).__angelRec?.stop(); } catch {}
       setStatus("paused");
     } else {
       setStatus("listening");
     }
-  }, [status]);
+  }, [status, settings.language]);
 
   const askQuestion = useCallback(async () => {
     if (!newQuestion.trim() || !sessionRef.current) return;
-    const q: Question = { id: crypto.randomUUID(), sessionId: sessionRef.current, text: newQuestion, provider: settings.provider, model: settings.model, status: "pending", timestamp: new Date().toISOString() };
+    const text = newQuestion;
+    const q: Question = { id: crypto.randomUUID(), sessionId: sessionRef.current, text, provider: settings.provider, model: settings.model, status: "pending", timestamp: new Date().toISOString() };
     setQuestions((prev) => [...prev, q]);
     setNewQuestion("");
     await fetch(`${API_BASE}/api/ask`, {
       method: "POST",
-      body: JSON.stringify({ sessionId: sessionRef.current, question: newQuestion, provider: settings.provider, model: settings.model }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId: sessionRef.current, question: text, provider: settings.provider, model: settings.model }),
     });
   }, [newQuestion, sessionRef.current, settings]);
 
