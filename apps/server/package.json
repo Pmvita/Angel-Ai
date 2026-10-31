@@ -13,15 +13,17 @@
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
+    "@angel/types": "*",
     "@anthropic-ai/sdk": "^0.27.0",
     "@google/generative-ai": "^0.12.0",
-    "@angel/types": "*",
+    "@supabase/supabase-js": "^2.118.0",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "nodemailer": "^10.2.1",
     "openai": "^4.52.0",
     "sharp": "^0.33.0",
     "socket.io": "^4.7.5",
+    "stripe": "^23.1.0",
     "uuid": "^9.0.1",
     "zod": "^3.23.0"
   },
@@ -34,4 +36,3 @@
     "typescript": "^5.5.0"
   }
 }
-

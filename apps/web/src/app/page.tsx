@@ -91,6 +91,25 @@ export default function OverlayPage() {
   }, [settings.realtimeTranslation, settings.language, targetLanguage]);
 
   useEffect(() => {
+    if (status !== "listening" || !sessionRef.current) return;
+    const api = (window as any).angelApi;
+    if (!api?.captureScreen) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await api.captureScreen();
+        if (res?.png) {
+          await fetch(`${API_BASE}/api/vision`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId: sessionRef.current, imageBase64: res.png }),
+          });
+        }
+      } catch {}
+    }, settings.captureIntervalMs || 5000);
+    return () => clearInterval(interval);
+  }, [status, settings.captureIntervalMs]);
+
+  useEffect(() => {
     if (sessionRef.current) {
       fetch(`${API_BASE}/api/activity?sessionId=${sessionRef.current}&limit=50`)
         .then((r) => r.json())
@@ -178,7 +197,7 @@ export default function OverlayPage() {
       fetch(`${API_BASE}/api/export/${job.id}`).then((r) => r.json()).then((j) => {
         if (j.status === "completed" && j.url) {
           const a = document.createElement("a");
-          a.href = j.url;
+          a.href = `${API_BASE}${j.url}`;
           a.download = `angel-export.${format === "markdown" ? "md" : format}`;
           a.click();
         }
@@ -418,6 +437,12 @@ export default function OverlayPage() {
                   />
                   <Button size="sm" onClick={addNote} disabled={!newNote.trim() || !sessionRef.current}>
                     Add
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={async () => {
+                    if (!sessionRef.current) return;
+                    await fetch(`${API_BASE}/api/notes/auto`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: sessionRef.current }) });
+                  }} disabled={!sessionRef.current}>
+                    Auto
                   </Button>
                 </div>
 

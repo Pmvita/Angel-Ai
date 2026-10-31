@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, globalShortcut, Tray, nativeImage, screen, shell, desktopCapturer } from "electron";
 import path from "node:path";
 import Store from "electron-store";
+import { autoUpdater } from "electron-updater";
 import { AppSettings } from "@angel/types";
 
 const store = new Store<{ settings: Partial<AppSettings> }>({ name: "angel-settings" });
@@ -78,6 +79,10 @@ app.whenReady().then(() => {
   createOverlayWindow();
   createTray();
 
+  if (app.isPackaged) {
+    autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+  }
+
   globalShortcut.register("CmdOrCtrl+Shift+S", () => {
     if (overlayWindow) {
       overlayWindow.isVisible() ? overlayWindow.hide() : overlayWindow.show();
@@ -126,6 +131,8 @@ ipcMain.handle("get-kill-switch", () => {
 ipcMain.handle("set-kill-switch", (_event, enabled: boolean) => {
   const settings = store.get("settings", {});
   store.set("settings", { ...settings, killSwitchEnabled: enabled });
+  if (enabled && overlayWindow) overlayWindow.hide();
+  if (!enabled && overlayWindow) overlayWindow.show();
   return { ok: true, enabled };
 });
 

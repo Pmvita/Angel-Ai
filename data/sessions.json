@@ -6,5 +6,13 @@
     "started_at": "2026-10-31T20:02:31.776Z",
     "app": "browser",
     "window_title": ""
+  },
+  "a6e8ba52-c8b2-497c-848f-76895b1d3c17": {
+    "id": "a6e8ba52-c8b2-497c-848f-76895b1d3c17",
+    "title": "smoke2",
+    "status": "idle",
+    "started_at": "2026-10-31T20:13:11.232Z",
+    "app": "browser",
+    "window_title": ""
   }
 }

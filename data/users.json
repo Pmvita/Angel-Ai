@@ -1,0 +1,16 @@
+{
+  "a53b9b4d-1855-4180-924f-e228fa1ae40c": {
+    "email": "test@x.com",
+    "password": "pass",
+    "name": "Test",
+    "createdAt": "2026-10-31T20:15:07.974Z",
+    "id": "a53b9b4d-1855-4180-924f-e228fa1ae40c"
+  },
+  "0ec21199-86ed-4c50-9153-440d2dcc6e42": {
+    "email": "a@b.com",
+    "password": "p",
+    "name": "a",
+    "createdAt": "2026-10-31T20:23:13.078Z",
+    "id": "0ec21199-86ed-4c50-9153-440d2dcc6e42"
+  }
+}

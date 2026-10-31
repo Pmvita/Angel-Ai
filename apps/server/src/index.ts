@@ -10,6 +10,7 @@ import { exportService } from "./services/export";
 import { emailExportService } from "./services/email";
 import { TranslationService } from "./services/translation";
 import { VisionService } from "./services/vision";
+import path from "node:path";
 import { AppSettings } from "@angel/types";
 
 const app = express();
@@ -18,6 +19,7 @@ const io = new IOServer(http, { cors: { origin: "*" } });
 
 app.use(cors());
 app.use(express.json());
+app.use("/exports", express.static(path.join(process.env.angel_DATA_DIR || process.cwd(), "exports")));
 
 const PORT = Number(process.env.PORT || 4000);
 
@@ -69,8 +71,24 @@ function persistSettings(next: AppSettings) {
   });
 }
 
-// Health
+app.post("/api/auth/register", (req, res) => {
+  const { email, password, name } = req.body || {};
+  if (!email || !password) return res.status(400).json({ error: "Missing email or password" });
+  const existing = store.list<any>("users").find((u: any) => u.email === email);
+  if (existing) return res.status(409).json({ error: "User exists" });
+  const user = store.insert<any>("users", { email, password, name: name || email.split("@")[0], createdAt: new Date().toISOString() });
+  const token = Buffer.from(`${user.id}:${Date.now()}`).toString("base64");
+  res.json({ token, user: { id: user.id, email: user.email, name: user.name } });
+});
 app.get("/api/health", (_req, res) => res.json({ ok: true, service: "angel-ai-server" }));
+
+app.post("/api/auth/login", (req, res) => {
+  const { email, password } = req.body || {};
+  const user = store.list<any>("users").find((u: any) => u.email === email && u.password === password);
+  if (!user) return res.status(401).json({ error: "Invalid credentials" });
+  const token = Buffer.from(`${user.id}:${Date.now()}`).toString("base64");
+  res.json({ token, user: { id: user.id, email: user.email, name: user.name } });
+});
 
 // Sessions
 app.get("/api/sessions", (_req, res) => res.json(sessionService.list()));
@@ -186,7 +204,30 @@ app.get("/api/sessions/:id/translations", (req, res) => {
   res.json(translation.list(req.params.id));
 });
 
-// Notes
+app.post("/api/notes/auto", async (req, res) => {
+  const { sessionId } = req.body || {};
+  if (!sessionId) return res.status(400).json({ error: "Missing sessionId" });
+  try {
+    const rows: any[] = sessionService.getTranscript(sessionId);
+    const context = rows.map((r) => `[${r.speaker}] ${r.text}`).join("\n");
+    const prompt = `Summarize the following meeting transcript into 3-5 concise bullet-point notes. Return only the bullets, one per line, prefixed with "- ".\n\n${context}`;
+    const summary = await llm.answer(prompt, []);
+    const bullets = summary.split("\n").map((l) => l.trim()).filter(Boolean);
+    const created = [];
+    for (const b of bullets) {
+      const content = b.replace(/^[-*]\s*/, "");
+      if (!content) continue;
+      const now = new Date().toISOString();
+      const note = sessionService.addNote(sessionId, { content, type: "auto", tags: ["auto"], createdAt: now, updatedAt: now });
+      created.push(note);
+      io.emit("note.created", note);
+    }
+    sessionService.addActivityEvent(sessionId, "notes.auto", `Generated ${created.length} auto notes`);
+    res.json(created);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
 app.post("/api/notes", (req, res) => {
   const { sessionId, content, type = "manual", tags } = req.body || {};
   if (!sessionId || !content) return res.status(400).json({ error: "Missing sessionId or content" });
@@ -197,6 +238,29 @@ app.post("/api/notes", (req, res) => {
   res.json(note);
 });
 
+app.post("/api/checkout", async (req, res) => {
+  const { plan = "pro", email } = req.body || {};
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    return res.json({ url: null, message: "Stripe not configured. Set STRIPE_SECRET_KEY to enable checkout." });
+  }
+  try {
+    const Stripe = (await import("stripe")).default;
+    const stripe = new Stripe(key);
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      customer_email: email,
+      line_items: [{ price: process.env.STRIPE_PRICE_ID || "", quantity: 1 }],
+      success_url: `${process.env.APP_URL || "http://localhost:3001"}/?checkout=success`,
+      cancel_url: `${process.env.APP_URL || "http://localhost:3001"}/pricing`,
+      metadata: { plan },
+    });
+    res.json({ url: session.url });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Export
 app.post("/api/export", (req, res) => {
   const { sessionId, format } = req.body || {};
@@ -205,8 +269,12 @@ app.post("/api/export", (req, res) => {
   res.json(job);
 });
 app.get("/api/export/:id", (req, res) => {
-  const row = store.get(COLLECTIONS.EXPORTS, req.params.id);
+  const row = store.get<any>(COLLECTIONS.EXPORTS, req.params.id);
   if (!row) return res.status(404).json({ error: "Not found" });
+  if (row.url) {
+    const base = path.basename(row.url);
+    row.url = `/exports/${base}`;
+  }
   res.json(row);
 });
 

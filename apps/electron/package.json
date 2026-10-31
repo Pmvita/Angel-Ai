@@ -7,19 +7,29 @@
   "private": true,
   "scripts": {
     "dev": "electron .",
-    "build": "tsc && node -e \"const fs=require('fs');fs.cpSync('dist/apps/electron/src','dist',{recursive:true,dereference:true});\" && electron-builder --win",
+    "build": "tsc && node -e \"const fs=require('fs');fs.cpSync('dist/apps/electron/src','dist',{recursive:true,dereference:true});\" && node -e \"const fs=require('fs');fs.cpSync('../../apps/server/dist','dist/server',{recursive:true,dereference:true});\" && electron-builder --win",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "clean": "rm -rf dist node_modules"
   },
   "build": {
     "appId": "com.angel.ai",
+    "publish": {
+      "provider": "github",
+      "owner": "Pmvita",
+      "repo": "angel-ai-clone"
+    },
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "build/icon.ico"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "icon": "build/icon.png"
     },
     "files": [
@@ -34,11 +44,12 @@
   "dependencies": {
     "@angel/config": "*",
     "@angel/types": "*",
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.8.11"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
-    "electron": "^28.3.3",
+    "electron": "28.3.3",
     "electron-builder": "^24.9.1",
     "typescript": "^5.5.0"
   }

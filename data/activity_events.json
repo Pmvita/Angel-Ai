@@ -6,5 +6,21 @@
     "message": "Session \"smoke\" started",
     "metadata": "{\"app\":\"browser\"}",
     "timestamp": "2026-10-31T20:02:31.777Z"
+  },
+  "749f69d7-8f36-420f-b099-2424d9065a48": {
+    "id": "749f69d7-8f36-420f-b099-2424d9065a48",
+    "sessionId": "a6e8ba52-c8b2-497c-848f-76895b1d3c17",
+    "type": "session.started",
+    "message": "Session \"smoke2\" started",
+    "metadata": "{\"app\":\"browser\"}",
+    "timestamp": "2026-10-31T20:13:11.234Z"
+  },
+  "a9b2aeb0-bf46-4bd0-a653-da52eecac1d9": {
+    "id": "a9b2aeb0-bf46-4bd0-a653-da52eecac1d9",
+    "sessionId": "a6e8ba52-c8b2-497c-848f-76895b1d3c17",
+    "type": "note.created",
+    "message": "Note added: test note",
+    "metadata": "{\"noteId\":\"5589933b-5f5d-4751-badc-960c26776e4e\"}",
+    "timestamp": "2026-10-31T20:13:11.481Z"
   }
 }
