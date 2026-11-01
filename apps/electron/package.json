@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "electron .",
     "build": "node -e \"const fs=require('fs');fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('bundle',{recursive:true,force:true});\" && tsc && node -e \"const fs=require('fs');fs.cpSync('dist/apps/electron/src','bundle',{recursive:true,dereference:true});\" && node -e \"const fs=require('fs');fs.mkdirSync('bundle/server',{recursive:true});\" && node \"../../node_modules/esbuild/bin/esbuild\" \"../../apps/server/dist/apps/server/src/index.js\" --bundle --platform=node --target=node18 --outfile=\"bundle/server/index.js\" && node -e \"const fs=require('fs');fs.cpSync('../../apps/web/out','bundle/web/out',{recursive:true,dereference:true});\" && electron-builder --win",
+"build:mac": "node -e \"const fs=require('fs');fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('bundle',{recursive:true,force:true});\" && tsc && node -e \"const fs=require('fs');fs.cpSync('dist/apps/electron/src','bundle',{recursive:true,dereference:true});\" && node -e \"const fs=require('fs');fs.mkdirSync('bundle/server',{recursive:true});\" && node \"../../node_modules/esbuild/bin/esbuild\" \"../../apps/server/dist/apps/server/src/index.js\" --bundle --platform=node --target=node18 --outfile=\"bundle/server/index.js\" && node -e \"const fs=require('fs');fs.cpSync('../../apps/web/out','bundle/web/out',{recursive:true,dereference:true});\" && electron-builder --mac",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "clean": "rm -rf dist node_modules"
@@ -31,6 +32,14 @@
         "deb"
       ],
       "icon": "build/icon.png"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.productivity"
     },
     "files": [
       "bundle/**/*",
