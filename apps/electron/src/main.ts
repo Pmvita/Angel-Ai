@@ -11,16 +11,24 @@ let serverProcess: any = null;
 
 function startServer() {
   if (!app.isPackaged) return; // dev: run server separately
-  const serverEntry = path.join(process.resourcesPath, "app.asar.unpacked", "bundle", "server", "apps", "server", "src", "index.js");
-  const altEntry = path.join(__dirname, "server", "apps", "server", "src", "index.js");
+  const serverEntry = path.join(process.resourcesPath, "app.asar.unpacked", "bundle", "server", "index.js");
+  const altEntry = path.join(__dirname, "server", "index.js");
   const entry = require("node:fs").existsSync(serverEntry) ? serverEntry : altEntry;
   const dataDir = path.join(app.getPath("userData"), "data");
-  require("node:fs").mkdirSync(dataDir, { recursive: true });
+  const fs = require("node:fs");
+  fs.mkdirSync(dataDir, { recursive: true });
+  const logPath = path.join(app.getPath("userData"), "server-start.log");
+  const log = (m: string) => { try { fs.appendFileSync(logPath, m + "\n"); } catch {} };
+  log("startServer called, packaged=" + app.isPackaged);
+  log("entry=" + entry + " exists=" + fs.existsSync(entry));
   serverProcess = utilityProcess.fork(entry, [], {
     env: { ...process.env, PORT: "4000", angel_DATA_DIR: dataDir },
     stdio: "pipe",
   });
-  serverProcess.on("exit", () => { serverProcess = null; });
+  log("forked, pid=" + serverProcess.pid);
+  serverProcess.stdout?.on("data", (d: Buffer) => log("OUT: " + d.toString()));
+  serverProcess.stderr?.on("data", (d: Buffer) => log("ERR: " + d.toString()));
+  serverProcess.on("exit", (code: number) => { log("EXIT: " + code); serverProcess = null; });
 }
 
 function stopServer() {

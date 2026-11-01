@@ -11,16 +11,27 @@ let serverProcess = null;
 function startServer() {
     if (!electron_1.app.isPackaged)
         return; // dev: run server separately
-    const serverEntry = node_path_1.default.join(process.resourcesPath, "app.asar.unpacked", "bundle", "server", "apps", "server", "src", "index.js");
-    const altEntry = node_path_1.default.join(__dirname, "server", "apps", "server", "src", "index.js");
+    const serverEntry = node_path_1.default.join(process.resourcesPath, "app.asar.unpacked", "bundle", "server", "index.js");
+    const altEntry = node_path_1.default.join(__dirname, "server", "index.js");
     const entry = require("node:fs").existsSync(serverEntry) ? serverEntry : altEntry;
     const dataDir = node_path_1.default.join(electron_1.app.getPath("userData"), "data");
-    require("node:fs").mkdirSync(dataDir, { recursive: true });
+    const fs = require("node:fs");
+    fs.mkdirSync(dataDir, { recursive: true });
+    const logPath = node_path_1.default.join(electron_1.app.getPath("userData"), "server-start.log");
+    const log = (m) => { try {
+        fs.appendFileSync(logPath, m + "\n");
+    }
+    catch { } };
+    log("startServer called, packaged=" + electron_1.app.isPackaged);
+    log("entry=" + entry + " exists=" + fs.existsSync(entry));
     serverProcess = electron_1.utilityProcess.fork(entry, [], {
         env: { ...process.env, PORT: "4000", angel_DATA_DIR: dataDir },
         stdio: "pipe",
     });
-    serverProcess.on("exit", () => { serverProcess = null; });
+    log("forked, pid=" + serverProcess.pid);
+    serverProcess.stdout?.on("data", (d) => log("OUT: " + d.toString()));
+    serverProcess.stderr?.on("data", (d) => log("ERR: " + d.toString()));
+    serverProcess.on("exit", (code) => { log("EXIT: " + code); serverProcess = null; });
 }
 function stopServer() {
     serverProcess?.kill();
