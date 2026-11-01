@@ -6,7 +6,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
-  default: "bg-white text-[var(--text)] border border-[var(--control)] hover:bg-[var(--raised)]",
+  default: "bg-[var(--raised)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--active)]",
   ghost: "bg-transparent text-[var(--muted)] hover:bg-[var(--raised)] hover:text-[var(--text)]",
   danger: "bg-transparent text-[var(--negative)] border border-[var(--negative)] hover:bg-[var(--negative)] hover:text-white",
   primary: "bg-[var(--primary)] text-white hover:opacity-90",

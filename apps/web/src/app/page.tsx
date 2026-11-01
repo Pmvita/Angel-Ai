@@ -255,41 +255,51 @@ export default function OverlayPage() {
   }
 
   return (
-    <main className="h-screen w-screen overflow-hidden flex flex-col">
-      <header className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-[var(--surface)] ">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-md bg-[var(--primary)] flex items-center justify-center text-white font-semibold text-sm">A</div>
-          <div>
-            <h1 className="text-sm font-semibold tracking-tight text-[var(--text)]">Angel-Ai</h1>
-            <p className="text-xs text-white/40">{status.toUpperCase()} · OVERLAY ACTIVE</p>
+    <main className="h-screen w-screen overflow-hidden flex flex-col bg-[var(--ground)]">
+      {/* Header status bar */}
+      <header className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border)] bg-[var(--panel)]">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-md bg-[var(--primary)] flex items-center justify-center text-white font-semibold text-xs">A</div>
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-[var(--text)] leading-tight">Angel-Ai</span>
+            <span className="text-[10px] text-[var(--muted)] leading-tight">{status.toUpperCase()}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button onClick={toggleListen} className={`p-2 rounded-lg transition-colors ${status === "idle" ? "bg-[var(--surface)]/10 text-white hover:bg-[var(--surface)]/20" : "bg-rose-500 text-[var(--text)] hover:bg-rose-600"}`}>
-            {status === "idle" || status === "stopped" ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+        <div className="flex items-center gap-1.5">
+          <Badge variant={status === "listening" ? "success" : "secondary"} className="text-[10px]">
+            {status === "listening" ? "LIVE" : status.toUpperCase()}
+          </Badge>
+          <button onClick={toggleListen} className={`p-1.5 rounded-md transition-colors ${status === "listening" ? "bg-[var(--negative)] text-white" : "bg-[var(--primary)] text-white"}`}>
+            {status === "listening" ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
           </button>
-          <button onClick={() => setIsMinimized(true)} className="p-2 rounded-lg bg-[var(--surface)]/5 text-white/70 hover:bg-[var(--surface)]/10"><Minimize className="w-4 h-4" /></button>
-          <button onClick={() => window.close()} className="p-2 rounded-lg bg-[var(--surface)]/5 text-white/70 hover:bg-[var(--surface)]/10"><X className="w-4 h-4" /></button>
+          <button onClick={() => setIsMinimized(true)} className="p-1.5 rounded-md text-[var(--muted)] hover:bg-[var(--raised)]">
+            <Minimize className="w-3.5 h-3.5" />
+          </button>
+          <button onClick={() => window.close()} className="p-1.5 rounded-md text-[var(--muted)] hover:bg-[var(--raised)]">
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       </header>
 
-      <div className="flex-1 overflow-hidden flex">
-        <nav className="w-20 border-r border-white/10 bg-[var(--surface)] p-2 flex flex-col gap-1">
-          {tabs.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                tab === t.id ? "bg-[var(--primary)]/20 text-[var(--muted)] border border-[var(--primary)]/30" : "text-white/60 hover:bg-[var(--surface)]/5"
-              }`}
-            >
-              <t.icon className="w-4 h-4" />
-              <span>{t.label}</span>
-            </button>
-          ))}
-        </nav>
+      {/* Tab navigation */}
+      <nav className="flex items-center gap-1 px-3 py-1.5 border-b border-[var(--border)] bg-[var(--ground)] overflow-x-auto">
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
+              tab === t.id
+                ? "bg-[var(--primary)] text-white"
+                : "text-[var(--muted)] hover:bg-[var(--raised)] hover:text-[var(--text)]"
+            }`}
+          >
+            <t.icon className="w-3.5 h-3.5" />
+            <span>{t.label}</span>
+          </button>
+        ))}
+      </nav>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 space-y-3">
           {tab === "listen" && (
             <section className="space-y-4">
               <Panel title="Live Transcript" headerClassName="flex items-center justify-between">
@@ -681,10 +691,9 @@ export default function OverlayPage() {
             </section>
           )}
         </div>
-      </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.0.0 · Invisible Assistant</div>
+        <div>Angel-Ai v2.0.2 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />
