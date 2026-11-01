@@ -223,3 +223,20 @@ ipcMain.handle("set-kill-switch", (_event, enabled: boolean) => {
   return { ok: true, enabled };
 });
 
+let dragOffset = { x: 0, y: 0 };
+
+ipcMain.handle("drag-start", (event, { x, y }: { x: number; y: number }) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win) return { ok: false };
+  const bounds = win.getBounds();
+  dragOffset = { x: x - bounds.x, y: y - bounds.y };
+  return { ok: true };
+});
+
+ipcMain.handle("drag-move", (event, { x, y }: { x: number; y: number }) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win) return { ok: false };
+  win.setPosition(x - dragOffset.x, y - dragOffset.y);
+  return { ok: true };
+});
+

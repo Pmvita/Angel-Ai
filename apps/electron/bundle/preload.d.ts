@@ -8,6 +8,8 @@ export type angelApi = {
     setLicense: (license: string) => Promise<unknown>;
     clearLicense: () => Promise<unknown>;
     onStatusChange: (cb: (status: string) => void) => void;
+    dragStart: (x: number, y: number) => Promise<unknown>;
+    dragMove: (x: number, y: number) => Promise<unknown>;
 };
 declare global {
     interface Window {

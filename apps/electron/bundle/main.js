@@ -214,3 +214,19 @@ electron_1.ipcMain.handle("set-kill-switch", (_event, enabled) => {
         overlayWindow.show();
     return { ok: true, enabled };
 });
+let dragOffset = { x: 0, y: 0 };
+electron_1.ipcMain.handle("drag-start", (event, { x, y }) => {
+    const win = electron_1.BrowserWindow.fromWebContents(event.sender);
+    if (!win)
+        return { ok: false };
+    const bounds = win.getBounds();
+    dragOffset = { x: x - bounds.x, y: y - bounds.y };
+    return { ok: true };
+});
+electron_1.ipcMain.handle("drag-move", (event, { x, y }) => {
+    const win = electron_1.BrowserWindow.fromWebContents(event.sender);
+    if (!win)
+        return { ok: false };
+    win.setPosition(x - dragOffset.x, y - dragOffset.y);
+    return { ok: true };
+});

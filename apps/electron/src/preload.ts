@@ -10,6 +10,8 @@ export type angelApi = {
   setLicense: (license: string) => Promise<unknown>;
   clearLicense: () => Promise<unknown>;
   onStatusChange: (cb: (status: string) => void) => void;
+  dragStart: (x: number, y: number) => Promise<unknown>;
+  dragMove: (x: number, y: number) => Promise<unknown>;
 };
 
 contextBridge.exposeInMainWorld("angelApi", {
@@ -24,6 +26,8 @@ contextBridge.exposeInMainWorld("angelApi", {
   onStatusChange: (cb: (status: string) => void) => {
     ipcRenderer.on("status-change", (_e, status) => cb(status));
   },
+  dragStart: (x: number, y: number) => ipcRenderer.invoke("drag-start", { x, y }),
+  dragMove: (x: number, y: number) => ipcRenderer.invoke("drag-move", { x, y }),
 });
 
 declare global {

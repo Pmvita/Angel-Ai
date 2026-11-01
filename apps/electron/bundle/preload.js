@@ -13,4 +13,6 @@ electron_1.contextBridge.exposeInMainWorld("angelApi", {
     onStatusChange: (cb) => {
         electron_1.ipcRenderer.on("status-change", (_e, status) => cb(status));
     },
+    dragStart: (x, y) => electron_1.ipcRenderer.invoke("drag-start", { x, y }),
+    dragMove: (x, y) => electron_1.ipcRenderer.invoke("drag-move", { x, y }),
 });
