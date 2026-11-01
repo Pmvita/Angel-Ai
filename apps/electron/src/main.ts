@@ -136,8 +136,27 @@ app.whenReady().then(async () => {
   overlayWindow?.show();
 
   if (app.isPackaged) {
-    // auto-update disabled until first GitHub release is published
-    // autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+    // Check for updates on GitHub releases
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
+    autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+    autoUpdater.on("update-available", (info) => {
+      console.log("Update available:", info.version);
+    });
+    autoUpdater.on("update-downloaded", (info) => {
+      console.log("Update downloaded:", info.version);
+      // Notify via tray or dialog
+      const { dialog } = require("electron");
+      dialog.showMessageBox({
+        type: "info",
+        title: "Update Ready",
+        message: `Angel-Ai ${info.version} has been downloaded. It will be installed when you quit the app.`,
+        buttons: ["OK"],
+      });
+    });
+    autoUpdater.on("error", (err) => {
+      console.error("Auto-update error:", err);
+    });
   }
 
   globalShortcut.register("CmdOrCtrl+Shift+S", () => {

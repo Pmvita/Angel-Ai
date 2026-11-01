@@ -1,7 +1,7 @@
 {
   "name": "@angel/electron",
   "productName": "Angel-Ai",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Angel-Ai — invisible real-time AI assistant desktop app",
   "main": "./dist/main.js",
   "private": true,
@@ -18,7 +18,7 @@
     "publish": {
       "provider": "github",
       "owner": "Pmvita",
-      "repo": "angel-ai-clone"
+      "repo": "Angel-Ai"
     },
     "win": {
       "target": [

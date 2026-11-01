@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const node_path_1 = __importDefault(require("node:path"));
 const electron_store_1 = __importDefault(require("electron-store"));
+const electron_updater_1 = require("electron-updater");
 const store = new electron_store_1.default({ name: "angel-settings" });
 let serverProcess = null;
 function startServer() {
@@ -128,8 +129,27 @@ electron_1.app.whenReady().then(async () => {
     // Show only the overlay on launch; main window stays hidden until requested via tray.
     overlayWindow?.show();
     if (electron_1.app.isPackaged) {
-        // auto-update disabled until first GitHub release is published
-        // autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+        // Check for updates on GitHub releases
+        electron_updater_1.autoUpdater.autoDownload = true;
+        electron_updater_1.autoUpdater.autoInstallOnAppQuit = true;
+        electron_updater_1.autoUpdater.checkForUpdatesAndNotify().catch(() => { });
+        electron_updater_1.autoUpdater.on("update-available", (info) => {
+            console.log("Update available:", info.version);
+        });
+        electron_updater_1.autoUpdater.on("update-downloaded", (info) => {
+            console.log("Update downloaded:", info.version);
+            // Notify via tray or dialog
+            const { dialog } = require("electron");
+            dialog.showMessageBox({
+                type: "info",
+                title: "Update Ready",
+                message: `Angel-Ai ${info.version} has been downloaded. It will be installed when you quit the app.`,
+                buttons: ["OK"],
+            });
+        });
+        electron_updater_1.autoUpdater.on("error", (err) => {
+            console.error("Auto-update error:", err);
+        });
     }
     electron_1.globalShortcut.register("CmdOrCtrl+Shift+S", () => {
         if (overlayWindow) {
