@@ -70,8 +70,9 @@ function createOverlayWindow() {
     width: 400,
     height: 620,
     alwaysOnTop: true,
-    transparent: true,
+    transparent: false,
     frame: false,
+    backgroundColor: "#1a1a1a",
     focusable: true,
     skipTaskbar: store.get("settings.hideFromTaskbar", false),
     webPreferences: {
