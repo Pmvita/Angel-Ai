@@ -20,9 +20,18 @@
   "96b15088-04f7-49a5-aacc-632bca7da5aa": {
     "id": "96b15088-04f7-49a5-aacc-632bca7da5aa",
     "title": "Untitled Session",
-    "status": "idle",
+    "status": "stopped",
     "started_at": "2026-11-01T18:08:09.720Z",
     "app": "browser",
+    "window_title": "",
+    "ended_at": "2026-11-01T18:20:27.785Z"
+  },
+  "6d8d714c-1094-47cb-a5e6-04fb674edfdc": {
+    "id": "6d8d714c-1094-47cb-a5e6-04fb674edfdc",
+    "title": "Untitled Session",
+    "status": "idle",
+    "started_at": "2026-11-01T18:23:29.129Z",
+    "app": "unknown",
     "window_title": ""
   }
 }

@@ -60,6 +60,7 @@ export default function OverlayPage() {
     }
   }, []);
   const sessionRef = useRef<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const wsRef = useRef<any>(null);
 
   useEffect(() => {
@@ -70,6 +71,7 @@ export default function OverlayPage() {
     });
     socket.on("session.created", (data: any) => {
       sessionRef.current = data.sessionId;
+      setSessionId(data.sessionId);
       setStatus("listening");
     });
     socket.on("transcript", (seg: any) => {
@@ -91,7 +93,7 @@ export default function OverlayPage() {
       }
     });
     socket.on("vision", (v: any) => setVision(v));
-    socket.on("question.answered", (q: any) => setQuestions((prev) => [...prev, q]));
+    socket.on("question.answered", (q: any) => setQuestions((prev) => { const idx = prev.findIndex((e) => e.id === q.id); if (idx >= 0) { const next = [...prev]; next[idx] = { ...next[idx], ...q }; return next; } return [...prev, q]; }));
     socket.on("note.created", (n: any) => setNotes((prev) => [n, ...prev]));
     socket.on("status", (d: any) => setStatus(d.status));
     socket.on("kill-switch", (d: any) => setSettings((s) => ({ ...s, killSwitchEnabled: d.enabled })));
@@ -126,13 +128,14 @@ export default function OverlayPage() {
         .then((r) => r.json())
         .then((data) => setTranslations(data));
     }
-  }, [sessionRef.current]);
+  }, [sessionId]);
 
   const toggleListen = useCallback(async () => {
     if (status === "idle" || status === "stopped") {
       const res = await fetch(`${API_BASE}/api/sessions`, { method: "POST", body: JSON.stringify({ app: "browser" }) });
       const data = await res.json();
       sessionRef.current = data.id;
+      setSessionId(data.id);
       setStatus("listening");
       // Client-side speech capture (Web Speech API) -> inject into server pipeline
       const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -230,7 +233,7 @@ export default function OverlayPage() {
         }
       });
     }, 1500);
-  }, [sessionRef.current]);
+  }, [sessionId]);
 
   const emailExport = useCallback(async () => {
     if (!sessionRef.current) return;
@@ -719,7 +722,7 @@ export default function OverlayPage() {
         </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.0.8 · Invisible Assistant</div>
+        <div>Angel-Ai v2.0.9 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />
