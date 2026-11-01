@@ -63,10 +63,10 @@ function createMainWindow() {
 }
 
 function createOverlayWindow() {
-  const { width } = screen.getPrimaryDisplay().workAreaSize;
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   overlayWindow = new BrowserWindow({
-    x: width - 420,
-    y: 80,
+    x: Math.round((width - 400) / 2),
+    y: Math.round((height - 620) / 2),
     width: 400,
     height: 620,
     alwaysOnTop: true,
@@ -134,6 +134,7 @@ app.whenReady().then(async () => {
   createTray();
   // Show only the overlay on launch; main window stays hidden until requested via tray.
   overlayWindow?.show();
+  overlayWindow?.focus();
 
   if (app.isPackaged) {
     // Check for updates on GitHub releases
