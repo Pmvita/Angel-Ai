@@ -7,12 +7,12 @@ export interface BadgeProps {
 }
 
 const variantClasses: Record<NonNullable<BadgeProps["variant"]>, string> = {
-  default: "bg-emerald-500 text-black",
-  secondary: "bg-white/10 text-white/80",
-  success: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-  warning: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
-  destructive: "bg-rose-500/20 text-rose-400 border border-rose-500/30",
-  outline: "bg-white/5 text-white/60 border border-white/20",
+  default: "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30",
+  secondary: "bg-white/[0.06] text-white/70 border border-white/10",
+  success: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/25",
+  warning: "bg-amber-500/15 text-amber-300 border border-amber-500/25",
+  destructive: "bg-rose-500/15 text-rose-300 border border-rose-500/25",
+  outline: "bg-white/[0.03] text-white/60 border border-white/10",
 };
 
 export function Badge({ children, className, variant = "default" }: BadgeProps) {

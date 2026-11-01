@@ -34,7 +34,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center px-6">
       <div className="w-full max-w-sm space-y-4">
-        <h1 className="text-3xl font-bold text-center">angel AI</h1>
+        <h1 className="text-3xl font-bold text-center">Angel-Ai</h1>
         <p className="text-white/60 text-center text-sm">{mode === "login" ? "Sign in" : "Create account"}</p>
         {mode === "register" && (
           <input className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />

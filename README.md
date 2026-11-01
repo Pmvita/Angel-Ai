@@ -1,4 +1,4 @@
-# angel AI
+# Angel-Ai
 
 Invisible real-time AI assistant for interviews and meetings. Listen, Vision, Ask, Notes — with translation, export, and a kill switch.
 
@@ -35,7 +35,7 @@ npm run build --workspace=apps/web
 cd apps/electron && npm run build
 ```
 
-Output: `apps/electron/dist/angel AI Setup 2.0.0.exe` — fully standalone (bundled server + web UI).
+Output: `apps/electron/dist/Angel-Ai Setup 2.0.0.exe` — fully standalone (bundled server + web UI).
 
 ## Configuration
 

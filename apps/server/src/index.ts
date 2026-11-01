@@ -362,6 +362,6 @@ io.on("connection", (socket) => {
 });
 
 http.listen(PORT, () => {
-  console.log(`angel AI server listening on http://localhost:${PORT}`);
+  console.log(`Angel-Ai server listening on http://localhost:${PORT}`);
 });
 

@@ -10,7 +10,7 @@ export interface PanelProps {
 
 export function Panel({ children, title, className, headerClassName, bodyClassName }: PanelProps) {
   return (
-    <section className={["relative rounded-xl border border-white/10 bg-black/60 backdrop-blur-md shadow-2xl", className].filter(Boolean).join(" ")}>
+    <section className={["relative rounded-xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]", className].filter(Boolean).join(" ")}>
       {title ? (
         <header className={["flex items-center justify-between px-4 py-3 border-b border-white/10", headerClassName].filter(Boolean).join(" ")}>
           <h3 className="text-sm font-semibold text-white/90">{title}</h3>

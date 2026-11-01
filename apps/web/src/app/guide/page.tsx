@@ -14,7 +14,7 @@ export default function GuidePage() {
   return (
     <main className="min-h-screen bg-black text-white px-6 py-12 max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold mb-2">Guide</h1>
-      <p className="text-white/60 mb-8">How to use angel AI for interviews and meetings.</p>
+      <p className="text-white/60 mb-8">How to use Angel-Ai for interviews and meetings.</p>
       <div className="space-y-4">
         {steps.map((s) => (
           <div key={s.title} className="rounded-xl border border-white/10 bg-white/5 p-5">
