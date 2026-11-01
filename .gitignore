@@ -10,3 +10,4 @@ build/
 *.pem
 coverage/
 .tmp/
+apps/server/data/

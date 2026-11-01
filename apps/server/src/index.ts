@@ -54,8 +54,8 @@ let llm = new LLMService({
   systemPrompt: settings.systemPrompt,
 });
 
-const translation = new TranslationService(llm);
-const visionService = new VisionService(llm);
+let translation = new TranslationService(llm);
+let visionService = new VisionService(llm);
 
 function persistSettings(next: AppSettings) {
   settings = next;
@@ -69,6 +69,8 @@ function persistSettings(next: AppSettings) {
     maxTokens: settings.maxTokens,
     systemPrompt: settings.systemPrompt,
   });
+  translation = new TranslationService(llm);
+  visionService = new VisionService(llm);
 }
 
 app.post("/api/auth/register", (req, res) => {

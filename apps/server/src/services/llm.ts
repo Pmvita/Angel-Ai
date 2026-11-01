@@ -84,7 +84,9 @@ export class LLMService {
   async analyzeVision(imageBase64: string, prompt: string): Promise<{ summary: string; keyPoints: string[]; actionItems: string[]; detectedText?: string }> {
     switch (this.config.provider) {
       case "openai":
-      case "custom": {
+      case "custom":
+      case "openrouter":
+      case "lmstudio": {
         const completion = await this.openai!.chat.completions.create({
           model: this.config.model,
           messages: [
@@ -93,11 +95,13 @@ export class LLMService {
           ],
           max_tokens: 1000,
         });
-        const content = completion.choices[0]?.message?.content || "{}";
+        const rawContent = completion.choices[0]?.message?.content || "{}";
+        const content = rawContent.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
         try {
-          return JSON.parse(content);
+          const parsed = JSON.parse(content);
+          return { summary: parsed.summary || content, keyPoints: parsed.keyPoints || [], actionItems: parsed.actionItems || [], detectedText: parsed.detectedText || undefined };
         } catch {
-          return { summary: content, keyPoints: [], actionItems: [] };
+          return { summary: rawContent, keyPoints: [], actionItems: [] };
         }
       }
       case "anthropic": {
@@ -108,21 +112,25 @@ export class LLMService {
           system: "You analyze screenshots from meetings and interviews. Extract summary, key points, action items, and visible text.",
           messages: [{ role: "user", content: [{ type: "text", text: prompt }, { type: "image", source: { type: "base64", media_type: "image/png", data: imageBase64 } }] }],
         });
-        const content = (msg.content[0] as any).text || "{}";
+        const rawContent = (msg.content[0] as any).text || "{}";
+        const content = rawContent.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
         try {
-          return JSON.parse(content);
+          const parsed = JSON.parse(content);
+          return { summary: parsed.summary || content, keyPoints: parsed.keyPoints || [], actionItems: parsed.actionItems || [], detectedText: parsed.detectedText || undefined };
         } catch {
-          return { summary: content, keyPoints: [], actionItems: [] };
+          return { summary: rawContent, keyPoints: [], actionItems: [], detectedText: undefined };
         }
       }
       case "google": {
         const model = this.google!.getGenerativeModel({ model: this.config.model });
         const result = await model.generateContent([prompt, { inlineData: { data: imageBase64, mimeType: "image/png" } }]);
-        const content = result.response.text() || "{}";
+        const rawContent = result.response.text() || "{}";
+        const content = rawContent.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
         try {
-          return JSON.parse(content);
+          const parsed = JSON.parse(content);
+          return { summary: parsed.summary || content, keyPoints: parsed.keyPoints || [], actionItems: parsed.actionItems || [], detectedText: parsed.detectedText || undefined };
         } catch {
-          return { summary: content, keyPoints: [], actionItems: [] };
+          return { summary: rawContent, keyPoints: [], actionItems: [], detectedText: undefined };
         }
       }
       default:

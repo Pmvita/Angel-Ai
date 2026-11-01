@@ -26,7 +26,7 @@ export class VisionService {
       sessionId,
       screenshotId,
       provider: this.llm.config.provider,
-      model: "gpt-4o-mini",
+      model: this.llm.config.model,
       summary: result.summary,
       keyPoints: result.keyPoints,
       actionItems: result.actionItems,
