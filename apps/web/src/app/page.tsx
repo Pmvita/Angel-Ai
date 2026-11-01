@@ -108,13 +108,23 @@ export default function OverlayPage() {
       try {
         const res = await api.captureScreen();
         if (res?.png) {
-          await fetch(`${API_BASE}/api/vision`, {
+          const r = await fetch(`${API_BASE}/api/vision`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ sessionId: sessionRef.current, imageBase64: res.png }),
           });
+          if (!r.ok) {
+            const err = await r.text();
+            console.error("[vision] API error:", r.status, err);
+          } else {
+            console.log("[vision] analysis received");
+          }
+        } else {
+          console.warn("[vision] no png from captureScreen");
         }
-      } catch {}
+      } catch (e) {
+        console.error("[vision] capture error:", e);
+      }
     }, settings.captureIntervalMs || 5000);
     return () => clearInterval(interval);
   }, [status, settings.captureIntervalMs]);
@@ -722,7 +732,7 @@ export default function OverlayPage() {
         </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.0.12 · Invisible Assistant</div>
+        <div>Angel-Ai v2.0.13 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />
