@@ -722,7 +722,7 @@ export default function OverlayPage() {
         </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.0.11 · Invisible Assistant</div>
+        <div>Angel-Ai v2.0.12 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />

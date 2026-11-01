@@ -62,10 +62,10 @@ function createMainWindow() {
     mainWindow.once("ready-to-show", () => { });
 }
 function createOverlayWindow() {
-    const { width } = electron_1.screen.getPrimaryDisplay().workAreaSize;
+    const { width, height } = electron_1.screen.getPrimaryDisplay().workAreaSize;
     overlayWindow = new electron_1.BrowserWindow({
-        x: width - 420,
-        y: 80,
+        x: Math.round((width - 400) / 2),
+        y: Math.round((height - 620) / 2),
         width: 400,
         height: 620,
         alwaysOnTop: true,
@@ -128,6 +128,7 @@ electron_1.app.whenReady().then(async () => {
     createTray();
     // Show only the overlay on launch; main window stays hidden until requested via tray.
     overlayWindow?.show();
+    overlayWindow?.focus();
     if (electron_1.app.isPackaged) {
         // Check for updates on GitHub releases
         electron_updater_1.autoUpdater.autoDownload = true;
