@@ -27,10 +27,6 @@
     --warning: #f59e0b;
   }
 
-  * {
-    @apply border-border;
-  }
-
   body {
     @apply bg-[var(--ground)] text-[var(--text)] antialiased;
     font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
