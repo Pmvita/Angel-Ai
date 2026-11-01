@@ -155,10 +155,29 @@ export default function OverlayPage() {
         (window as any).__angelRec = rec;
       }
     } else if (status === "listening") {
-      await fetch(`${API_BASE}/api/sessions/${sessionRef.current}/stop`, { method: "POST" });
       try { (window as any).__angelRec?.stop(); } catch {}
       setStatus("paused");
     } else {
+      // Resume: restart recognition
+      const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SR) {
+        const rec = new SR();
+        rec.continuous = true;
+        rec.interimResults = false;
+        rec.lang = settings.language || "en-US";
+        rec.onresult = (e: any) => {
+          const last = e.results[e.results.length - 1];
+          if (last && last.isFinal) {
+            const text = last[0].transcript.trim();
+            if (text && sessionRef.current && wsRef.current) {
+              (wsRef.current as any).emit("transcript.inject", { sessionId: sessionRef.current, speaker: "other", text });
+            }
+          }
+        };
+        rec.onerror = () => {};
+        rec.start();
+        (window as any).__angelRec = rec;
+      }
       setStatus("listening");
     }
   }, [status, settings.language]);
@@ -261,8 +280,8 @@ export default function OverlayPage() {
         if ((e.target as HTMLElement).closest("button, input, select, textarea, [data-no-drag]")) return;
         const startX = e.screenX;
         const startY = e.screenY;
-        window.angelApi?.dragStart?.(startX, startY);
-        const onMove = (ev: MouseEvent) => window.angelApi?.dragMove?.(ev.screenX, ev.screenY);
+        (window as any).angelApi?.dragStart?.(startX, startY);
+        const onMove = (ev: MouseEvent) => (window as any).angelApi?.dragMove?.(ev.screenX, ev.screenY);
         const onUp = () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
         window.addEventListener("mousemove", onMove);
         window.addEventListener("mouseup", onUp);
@@ -332,7 +351,7 @@ export default function OverlayPage() {
               )}
 
               {/* Transcript */}
-              <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+              <div className="space-y-2 max-h-[60vh] overflow-y-auto" ref={(el) => { if (el) el.scrollTop = el.scrollHeight; }}>
                 {transcript.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <Mic className="w-8 h-8 text-[var(--faint)] mb-2" />
@@ -700,7 +719,7 @@ export default function OverlayPage() {
         </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.0.7 · Invisible Assistant</div>
+        <div>Angel-Ai v2.0.8 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />
@@ -711,7 +730,7 @@ export default function OverlayPage() {
           <button className="text-white/60 hover:text-white" title="Email Export" onClick={emailExport}>
             <Mail className="w-3 h-3" />
           </button>
-          <button className="text-white/60 hover:text-white" title="Copy" onClick={() => {}}>
+          <button className="text-white/60 hover:text-white" title="Copy" onClick={() => { const text = transcript.map((t: any) => `[${t.speaker}] ${t.text}`).join(String.fromCharCode(10)); navigator.clipboard?.writeText(text); }}>
             <Copy className="w-3 h-3" />
           </button>
           {settings.killSwitchEnabled && (
