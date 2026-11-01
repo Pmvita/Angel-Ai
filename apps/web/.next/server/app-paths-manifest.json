@@ -1,8 +1,8 @@
 {
-  "/page": "app/page.js",
-  "/guide/page": "app/guide/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/login/page": "app/login/page.js",
-  "/pricing/page": "app/pricing/page.js",
+  "/page": "app/page.js",
   "/settings/page": "app/settings/page.js",
-  "/_not-found/page": "app/_not-found/page.js"
+  "/guide/page": "app/guide/page.js",
+  "/pricing/page": "app/pricing/page.js"
 }
