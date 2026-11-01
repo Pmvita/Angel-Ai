@@ -88,6 +88,13 @@ function createOverlayWindow() {
     });
     return overlayWindow;
 }
+function showMainWindow() {
+    if (!mainWindow) {
+        createMainWindow();
+    }
+    mainWindow?.show();
+    mainWindow?.focus();
+}
 function createTray() {
     const icon = electron_1.nativeImage.createFromDataURL("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDJDMTAuNzYxNCAyIDEzIDQuMjM4NTggMTMgNjdDMTMgOS43NjE0MiAxMC43NjE0IDEyIDggMTJDMNS4yMzg1OCAxMiAzIDkuNzYxNDIgMyA3QzMgNC4yMzg1OCA1LjIzODU4IDIgOCAyWk04IDQuNEM5LjEwNDU3IDQuNCAxMCA1LjUwNDU3IDEwIDZDMTAgNi40OTU0MyA5LjEwNDU3IDcuNiA4IDcuNkM2Ljg5NTQzIDcuNiA2IDYuNDk1NDMgNiA2QzYgNS41MDQ1NyA2Ljg5NTQzIDQuNCA4IDQuNlaIiBmaWxsPSIjMjJjNTVlIi8+Cjwvc3ZnPgo=");
     tray = new electron_1.Tray(icon);
@@ -95,8 +102,10 @@ function createTray() {
     const contextMenu = electron_1.Menu.buildFromTemplate([
         { label: "Toggle Overlay", click: () => { if (overlayWindow)
                 overlayWindow.isVisible() ? overlayWindow.hide() : overlayWindow.show(); } },
-        { label: "Toggle Main Window", click: () => { if (mainWindow)
-                mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show(); } },
+        { label: "Toggle Main Window", click: () => { if (mainWindow && mainWindow.isVisible())
+                mainWindow.hide();
+            else
+                showMainWindow(); } },
         { type: "separator" },
         { label: "Show Both", click: () => { overlayWindow?.show(); mainWindow?.show(); } },
         { label: "Hide All", click: () => { overlayWindow?.hide(); mainWindow?.hide(); } },

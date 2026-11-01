@@ -265,11 +265,11 @@ export default function OverlayPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={toggleListen} className={`p-2 rounded-lg transition-colors ${status === "idle" ? "bg-white/10 text-white hover:bg-white/20" : "bg-rose-500 text-black hover:bg-rose-600"}`}>
+          <button onClick={toggleListen} className={`p-2 rounded-lg transition-colors ${status === "idle" ? "bg-[var(--surface)]/10 text-white hover:bg-[var(--surface)]/20" : "bg-rose-500 text-[var(--text)] hover:bg-rose-600"}`}>
             {status === "idle" || status === "stopped" ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
           </button>
-          <button onClick={() => setIsMinimized(true)} className="p-2 rounded-lg bg-white/5 text-white/70 hover:bg-white/10"><Minimize className="w-4 h-4" /></button>
-          <button onClick={() => window.close()} className="p-2 rounded-lg bg-white/5 text-white/70 hover:bg-white/10"><X className="w-4 h-4" /></button>
+          <button onClick={() => setIsMinimized(true)} className="p-2 rounded-lg bg-[var(--surface)]/5 text-white/70 hover:bg-[var(--surface)]/10"><Minimize className="w-4 h-4" /></button>
+          <button onClick={() => window.close()} className="p-2 rounded-lg bg-[var(--surface)]/5 text-white/70 hover:bg-[var(--surface)]/10"><X className="w-4 h-4" /></button>
         </div>
       </header>
 
@@ -280,7 +280,7 @@ export default function OverlayPage() {
               key={t.id}
               onClick={() => setTab(t.id)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                tab === t.id ? "bg-[var(--primary)]/20 text-[var(--muted)] border border-[var(--primary)]/30" : "text-white/60 hover:bg-white/5"
+                tab === t.id ? "bg-[var(--primary)]/20 text-[var(--muted)] border border-[var(--primary)]/30" : "text-white/60 hover:bg-[var(--surface)]/5"
               }`}
             >
               <t.icon className="w-4 h-4" />
@@ -321,7 +321,7 @@ export default function OverlayPage() {
                     const trans = translations.find((t: any) => t.sourceSegmentId === seg.id);
                     return (
                       <div key={seg.id} className={`flex gap-3 animate-fade-in ${seg.isHighlighted ? "bg-[var(--primary)]/10" : ""}`}>
-                        <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold border border-white/20 bg-white/10">
+                        <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold border border-white/20 bg-[var(--surface)]/10">
                           {seg.speaker.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1">
@@ -627,7 +627,7 @@ export default function OverlayPage() {
                   </div>
                   {!license && (
                     <button
-                      className="w-full py-2 rounded-lg bg-[var(--primary)] text-black font-semibold hover:bg-[var(--muted)]"
+                      className="w-full py-2 rounded-lg bg-[var(--primary)] text-[var(--text)] font-semibold hover:bg-[var(--muted)]"
                       onClick={async () => {
                         const api = (window as any).angelApi;
                         const sid = `dev-${Date.now()}`;
@@ -647,7 +647,7 @@ export default function OverlayPage() {
                   )}
                   {license && (
                     <button
-                      className="w-full py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 text-sm"
+                      className="w-full py-2 rounded-lg bg-[var(--surface)]/10 text-white hover:bg-[var(--surface)]/20 text-sm"
                       onClick={async () => {
                         const api = (window as any).angelApi;
                         if (api?.clearLicense) await api.clearLicense();

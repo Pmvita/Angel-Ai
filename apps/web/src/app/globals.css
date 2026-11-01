@@ -4,21 +4,27 @@
 
 @layer base {
   :root {
-    --ground: #f9fafb;
-    --surface: #ffffff;
-    --raised: #f9f9f9;
-    --active: #eeeeee;
-    --border: #e8e8e8;
-    --rule: #f2f2f2;
-    --control: #d1d5db;
-    --text: #111111;
-    --muted: #5f6368;
-    --faint: #6b6b6b;
-    --primary: #1d1f20;
-    --accent: #247b50;
-    --positive: #247b50;
-    --negative: #c4242a;
-    --grid: #e5e5e5;
+    --ground: #08090a;
+    --panel: #0f1011;
+    --surface: #191a1b;
+    --surface-2: #28282c;
+    --raised: rgba(255, 255, 255, 0.04);
+    --active: rgba(255, 255, 255, 0.06);
+    --control: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    --border-solid: #23252a;
+    --rule: rgba(255, 255, 255, 0.05);
+    --text: #f7f8f8;
+    --body: #d0d6e0;
+    --muted: #8a8f98;
+    --faint: #62666d;
+    --primary: #5e6ad2;
+    --primary-hover: #828fff;
+    --accent: #7170ff;
+    --positive: #10b981;
+    --negative: #f04438;
+    --warning: #f59e0b;
   }
 
   * {
@@ -27,14 +33,14 @@
 
   body {
     @apply bg-[var(--ground)] text-[var(--text)] antialiased;
-    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1, "tnum" 1;
+    font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-feature-settings: "cv01", "ss03";
     font-variant-numeric: tabular-nums;
   }
 
   html {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,0.15) transparent;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
   }
 
   ::-webkit-scrollbar {
@@ -47,12 +53,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.15);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 0.12);
   }
 
   [data-overlay="true"] {
@@ -89,4 +95,14 @@
 @keyframes listen {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+:focus-visible {
+  outline: 2px solid #7170ff;
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(113, 112, 255, 0.3);
+  color: #f7f8f8;
 }

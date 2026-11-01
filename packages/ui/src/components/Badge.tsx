@@ -9,9 +9,9 @@ export interface BadgeProps {
 const variantClasses: Record<NonNullable<BadgeProps["variant"]>, string> = {
   default: "bg-[var(--active)] text-[var(--text)]",
   secondary: "bg-[var(--raised)] text-[var(--muted)]",
-  success: "bg-[#dcfae5] text-[#04250e]",
-  warning: "bg-[#fffbeb] text-[#92400e]",
-  destructive: "bg-[#ffedea] text-[#831c1e]",
+  success: "bg-[rgba(16,185,129,0.15)] text-[#10b981]",
+  warning: "bg-[rgba(245,158,11,0.15)] text-[#f59e0b]",
+  destructive: "bg-[rgba(240,68,56,0.15)] text-[#f04438]",
   outline: "bg-transparent text-[var(--muted)] border border-[var(--border)]",
 };
 
