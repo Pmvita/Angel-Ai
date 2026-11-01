@@ -51,8 +51,16 @@ export default function OverlayPage() {
     exportDefaultFormat: "markdown",
   });
   const [isMinimized, setIsMinimized] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
+  const [license, setLicenseState] = useState<string | null>(null);
+
+  useEffect(() => {
+    const api = (window as any).angelApi;
+    if (api?.getLicense) {
+      api.getLicense().then((l: string | null) => setLicenseState(l));
+    }
+  }, []);
   const sessionRef = useRef<string | null>(null);
+  const wsRef = useRef<any>(null);
 
   useEffect(() => {
     const socket = io(API_BASE, { transports: ["websocket", "polling"] });
@@ -612,6 +620,44 @@ export default function OverlayPage() {
                   />
                 </div>
 
+                <div className="pt-4 border-t border-white/10 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-white/70">License</span>
+                    <span className={`text-xs ${license ? "text-emerald-400" : "text-white/40"}`}>{license ? "Activated" : "Free tier"}</span>
+                  </div>
+                  {!license && (
+                    <button
+                      className="w-full py-2 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400"
+                      onClick={async () => {
+                        const api = (window as any).angelApi;
+                        const sid = `dev-${Date.now()}`;
+                        const res = await fetch(`${API_BASE}/api/activate`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: sid }) });
+                        const data = await res.json();
+                        if (data.license) {
+                          if (api?.setLicense) await api.setLicense(data.license);
+                          setLicenseState(data.license);
+                          alert("Activated!");
+                        } else {
+                          alert(data.error || "Activation failed");
+                        }
+                      }}
+                    >
+                      Activate (dev)
+                    </button>
+                  )}
+                  {license && (
+                    <button
+                      className="w-full py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 text-sm"
+                      onClick={async () => {
+                        const api = (window as any).angelApi;
+                        if (api?.clearLicense) await api.clearLicense();
+                        setLicenseState(null);
+                      }}
+                    >
+                      Deactivate
+                    </button>
+                  )}
+                </div>
                 <div className="pt-4 border-t border-white/10 flex gap-2">
                   <Button variant="danger" size="sm" onClick={() => setSettings({
                     provider: "openai",

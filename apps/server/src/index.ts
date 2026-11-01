@@ -80,6 +80,26 @@ app.post("/api/auth/register", (req, res) => {
   const token = Buffer.from(`${user.id}:${Date.now()}`).toString("base64");
   res.json({ token, user: { id: user.id, email: user.email, name: user.name } });
 });
+app.post("/api/activate", async (req, res) => {
+  const { sessionId } = req.body || {};
+  if (!sessionId) return res.status(400).json({ error: "Missing sessionId" });
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    const license = Buffer.from(`dev:${sessionId}`).toString("base64");
+    return res.json({ license, status: "activated (dev)" });
+  }
+  try {
+    const Stripe = (await import("stripe")).default;
+    const stripe = new Stripe(key);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.payment_status !== "paid") return res.status(402).json({ error: "Payment not completed" });
+    const license = Buffer.from(`stripe:${session.id}:${session.customer_email || ""}`).toString("base64");
+    res.json({ license, status: "activated" });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.get("/api/health", (_req, res) => res.json({ ok: true, service: "angel-ai-server" }));
 
 app.post("/api/auth/login", (req, res) => {

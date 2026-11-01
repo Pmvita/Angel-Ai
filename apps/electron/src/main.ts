@@ -5,7 +5,7 @@ import Store from "electron-store";
 import { autoUpdater } from "electron-updater";
 import { AppSettings } from "@angel/types";
 
-const store = new Store<{ settings: Partial<AppSettings> }>({ name: "angel-settings" });
+const store = new Store<{ settings: Partial<AppSettings>; license?: string | null }>({ name: "angel-settings" });
 
 let serverProcess: ChildProcess | null = null;
 
@@ -148,6 +148,16 @@ ipcMain.handle("capture-screen", async () => {
   const png = primary.thumbnail.toPNG();
   return { png: png.toString("base64"), size: primary.thumbnail.getSize() };
 });
+ipcMain.handle("get-license", () => store.get("license", null));
+ipcMain.handle("set-license", (_event, license: string) => {
+  store.set("license", license);
+  return { ok: true };
+});
+ipcMain.handle("clear-license", () => {
+  store.delete("license");
+  return { ok: true };
+});
+
 ipcMain.handle("open-external", (_event, url: string) => shell.openExternal(url));
 
 ipcMain.handle("get-kill-switch", () => {
