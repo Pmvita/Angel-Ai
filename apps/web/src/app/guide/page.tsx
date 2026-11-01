@@ -9,6 +9,7 @@ export default function GuidePage() {
     { title: "5. Translation", body: "Enable real-time translation in Settings to translate each transcript segment to your target language." },
     { title: "6. Export", body: "Export sessions as Markdown, PDF, TXT, or JSON, or email them directly from the footer." },
     { title: "7. Kill switch", body: "Arm the kill switch to instantly hide the overlay and stop capture. Toggle from Settings or the tray icon." },
+    { title: "8. Zoom / screen-share caveat", body: "The overlay is a visible window. It is NOT hidden from screen capture. If an interviewer asks you to share your screen, hide the overlay first (kill switch or tray) or move it to a second monitor not being shared. Voice-only / camera-only interviews are safe." },
   ];
   return (
     <main className="min-h-screen bg-black text-white px-6 py-12 max-w-4xl mx-auto">
@@ -28,4 +29,3 @@ export default function GuidePage() {
     </main>
   );
 }
-
