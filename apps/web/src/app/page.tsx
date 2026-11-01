@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Mic, Eye, MessageSquare, FileText, Settings, X, Minimize, Download, Mail, Copy, MicOff, EyeOff, Globe, ShieldAlert, Activity } from "lucide-react";
-import { Button, Card, Toggle } from "@angel/ui";
+import { Button, Toggle } from "@angel/ui";
 import { Panel, Badge } from "@angel/ui";
 import type { SessionStatus, TranscriptSegment, VisionAnalysis, Question, Note, AppSettings } from "@angel/types";
 import { io } from "socket.io-client";
@@ -301,44 +301,48 @@ export default function OverlayPage() {
 
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
           {tab === "listen" && (
-            <section className="space-y-4">
-              <Panel title="Live Transcript" headerClassName="flex items-center justify-between">
+            <section className="space-y-3">
+              {/* Status bar */}
+              <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
                   <Badge variant={status === "listening" ? "success" : "secondary"}>
-                    {status === "listening" ? "LISTENING" : "IDLE"}
+                    {status === "listening" ? "LISTENING" : status.toUpperCase()}
                   </Badge>
-                  <span className="text-xs text-white/60 ml-2">{transcript.length} segments</span>
+                  <span className="text-xs text-[var(--muted)]">{transcript.length} segments</span>
                 </div>
-                <div className="flex gap-1">
-                  <Button variant="ghost" size="sm" onClick={toggleListen} disabled={status === "idle"}>
-                    {status === "idle" ? "Start" : status === "listening" ? "Pause" : "Resume"}
-                  </Button>
-                </div>
-              </Panel>
+                <Button variant="ghost" size="sm" onClick={toggleListen}>
+                  {status === "idle" || status === "stopped" ? "Start" : status === "listening" ? "Pause" : "Resume"}
+                </Button>
+              </div>
 
               {settings.realtimeTranslation && (
-                <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-[var(--muted)]" />
-                  <span className="text-xs text-[var(--muted)]">Real-time translation to {targetLanguage.toUpperCase()}</span>
+                <div className="flex items-center gap-2 px-1">
+                  <Globe className="w-3.5 h-3.5 text-[var(--muted)]" />
+                  <span className="text-xs text-[var(--muted)]">Translating to {targetLanguage.toUpperCase()}</span>
                 </div>
               )}
 
-              <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-2">
+              {/* Transcript */}
+              <div className="space-y-2 max-h-[60vh] overflow-y-auto">
                 {transcript.length === 0 ? (
-                  <p className="text-center text-white/40 text-sm py-8">No transcript yet. Start listening to capture speech.</p>
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <Mic className="w-8 h-8 text-[var(--faint)] mb-2" />
+                    <p className="text-sm text-[var(--muted)]">No transcript yet</p>
+                    <p className="text-xs text-[var(--faint)] mt-1">Start listening to capture speech</p>
+                  </div>
                 ) : (
                   transcript.map((seg) => {
                     const trans = translations.find((t: any) => t.sourceSegmentId === seg.id);
                     return (
-                      <div key={seg.id} className={`flex gap-3 animate-fade-in ${seg.isHighlighted ? "bg-[var(--primary)]/10" : ""}`}>
-                        <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold border border-white/20 bg-[var(--surface)]/10">
+                      <div key={seg.id} className={`flex gap-2.5 p-2.5 rounded-lg ${seg.isHighlighted ? "bg-[var(--primary)]/10 border border-[var(--primary)]/20" : "bg-[var(--raised)]"}`}>
+                        <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold bg-[var(--surface)] text-[var(--text)]">
                           {seg.speaker.charAt(0).toUpperCase()}
                         </div>
-                        <div className="flex-1">
-                          <div className="text-xs text-white/50">{new Date(seg.timestamp).toLocaleTimeString()}</div>
-                          <div className={`text-sm ${seg.isHighlighted ? "text-[var(--muted)] font-semibold" : "text-white/90"}`}>{seg.text}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[10px] text-[var(--faint)]">{new Date(seg.timestamp).toLocaleTimeString()}</div>
+                          <div className={`text-sm ${seg.isHighlighted ? "text-[var(--accent)] font-medium" : "text-[var(--body)]"}`}>{seg.text}</div>
                           {trans && (
-                            <div className="text-xs text-white/40 font-mono mt-1 italic">{`→ ${trans.translatedText}`}</div>
+                            <div className="text-xs text-[var(--muted)] font-mono mt-1 italic">{`→ ${trans.translatedText}`}</div>
                           )}
                         </div>
                       </div>
@@ -356,36 +360,30 @@ export default function OverlayPage() {
               </Panel>
 
               {vision ? (
-                <Card className="space-y-3">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
-                      <div className="text-xs text-white/50 uppercase tracking-wider">Summary</div>
-                      <p className="text-sm text-white/90 mt-1">{vision.summary}</p>
-                    </div>
-                    <div className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
-                      <div className="text-xs text-white/50 uppercase tracking-wider">Action Items</div>
-                      <ul className="text-sm text-white/90 mt-1 space-y-1 list-disc list-inside">
-                        {vision.actionItems.map((item, i) => (
-                          <li key={i}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
+                <div className="space-y-2">
+                  <div className="p-3 rounded-lg bg-[var(--raised)]">
+                    <div className="text-[10px] text-[var(--faint)] uppercase tracking-wider mb-1">Summary</div>
+                    <p className="text-sm text-[var(--body)]">{vision.summary}</p>
                   </div>
-                  <div className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
-                    <div className="text-xs text-white/50 uppercase tracking-wider">Key Points</div>
-                    <ul className="text-sm text-white/90 mt-1 space-y-1 list-disc list-inside">
-                      {vision.keyPoints.map((p, i) => (
-                        <li key={i}>{p}</li>
-                      ))}
+                  <div className="p-3 rounded-lg bg-[var(--raised)]">
+                    <div className="text-[10px] text-[var(--faint)] uppercase tracking-wider mb-1">Action Items</div>
+                    <ul className="text-sm text-[var(--body)] space-y-1 list-disc list-inside">
+                      {vision.actionItems.map((item, i) => <li key={i}>{item}</li>)}
+                    </ul>
+                  </div>
+                  <div className="p-3 rounded-lg bg-[var(--raised)]">
+                    <div className="text-[10px] text-[var(--faint)] uppercase tracking-wider mb-1">Key Points</div>
+                    <ul className="text-sm text-[var(--body)] space-y-1 list-disc list-inside">
+                      {vision.keyPoints.map((p, i) => <li key={i}>{p}</li>)}
                     </ul>
                   </div>
                   {vision.detectedText && (
-                    <div className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
-                      <div className="text-xs text-white/50 uppercase tracking-wider">Detected Text</div>
-                      <p className="text-sm text-white/70 font-mono mt-1 truncate">{vision.detectedText}</p>
+                    <div className="p-3 rounded-lg bg-[var(--raised)]">
+                      <div className="text-[10px] text-[var(--faint)] uppercase tracking-wider mb-1">Detected Text</div>
+                      <p className="text-sm text-[var(--muted)] font-mono truncate">{vision.detectedText}</p>
                     </div>
                   )}
-                </Card>
+                </div>
               ) : (
                 <div className="h-64 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-white/20 bg-[var(--raised)] text-center">
                   <EyeOff className="w-12 h-12 text-white/20 mb-3" />
