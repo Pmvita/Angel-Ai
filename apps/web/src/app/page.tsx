@@ -257,7 +257,7 @@ export default function OverlayPage() {
   return (
     <main className="h-screen w-screen overflow-hidden flex flex-col bg-[var(--ground)]">
       {/* Header status bar */}
-      <header className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border)] bg-[var(--panel)]">
+      <header className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border)] bg-[var(--panel)]" style={{ WebkitAppRegion: "drag" } as any}>
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-md bg-[var(--primary)] flex items-center justify-center text-white font-semibold text-xs">A</div>
           <div className="flex flex-col">
@@ -265,7 +265,7 @@ export default function OverlayPage() {
             <span className="text-[10px] text-[var(--muted)] leading-tight">{status.toUpperCase()}</span>
           </div>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5" style={{ WebkitAppRegion: "no-drag" } as any}>
           <Badge variant={status === "listening" ? "success" : "secondary"} className="text-[10px]">
             {status === "listening" ? "LIVE" : status.toUpperCase()}
           </Badge>
@@ -691,7 +691,7 @@ export default function OverlayPage() {
         </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.0.5 · Invisible Assistant</div>
+        <div>Angel-Ai v2.0.6 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />
