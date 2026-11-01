@@ -1,0 +1,2 @@
+# empty - override root .gitignore so dist/ is packaged
+EOF

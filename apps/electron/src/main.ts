@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, globalShortcut, Tray, nativeImage, screen, shell, desktopCapturer } from "electron";
+import { app, BrowserWindow, ipcMain, globalShortcut, Tray, nativeImage, screen, shell, desktopCapturer, utilityProcess } from "electron";
 import path from "node:path";
 import { spawn, ChildProcess } from "node:child_process";
 import Store from "electron-store";
@@ -7,19 +7,18 @@ import { AppSettings } from "@angel/types";
 
 const store = new Store<{ settings: Partial<AppSettings>; license?: string | null }>({ name: "angel-settings" });
 
-let serverProcess: ChildProcess | null = null;
+let serverProcess: any = null;
 
 function startServer() {
   if (!app.isPackaged) return; // dev: run server separately
-  const serverEntry = path.join(process.resourcesPath, "app.asar.unpacked", "dist", "server", "apps", "server", "src", "index.js");
-  const altEntry = path.join(__dirname, "dist", "server", "apps", "server", "src", "index.js");
+  const serverEntry = path.join(process.resourcesPath, "app.asar.unpacked", "bundle", "server", "apps", "server", "src", "index.js");
+  const altEntry = path.join(__dirname, "server", "apps", "server", "src", "index.js");
   const entry = require("node:fs").existsSync(serverEntry) ? serverEntry : altEntry;
   const dataDir = path.join(app.getPath("userData"), "data");
   require("node:fs").mkdirSync(dataDir, { recursive: true });
-  serverProcess = spawn(process.execPath, [entry], {
-    env: { ...process.env, ELECTRON_RUN_AS_NODE: "1", PORT: "4000", angel_DATA_DIR: dataDir },
-    stdio: "ignore",
-    detached: false,
+  serverProcess = utilityProcess.fork(entry, [], {
+    env: { ...process.env, PORT: "4000", angel_DATA_DIR: dataDir },
+    stdio: "pipe",
   });
   serverProcess.on("exit", () => { serverProcess = null; });
 }
@@ -49,7 +48,7 @@ function createMainWindow() {
     const url = process.env.NEXT_DEV_SERVER_URL || "http://localhost:3001";
     mainWindow.loadURL(url);
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../web/out/index.html"));
+    mainWindow.loadFile(path.join(process.resourcesPath, "app.asar.unpacked", "bundle", "web", "out", "index.html"));
   }
 
   mainWindow.once("ready-to-show", () => mainWindow?.show());
@@ -76,7 +75,7 @@ function createOverlayWindow() {
 
   const isDev = !!(process.env.NEXT_DEV_SERVER_URL || process.env.NODE_ENV === "development");
   const baseUrl = process.env.NEXT_DEV_SERVER_URL || "http://localhost:3001";
-  const url = isDev ? baseUrl : `file://${path.join(__dirname, "../web/out/index.html")}`;
+  const url = isDev ? baseUrl : `file://${path.join(process.resourcesPath, "app.asar.unpacked", "bundle", "web", "out", "index.html")}`;
   overlayWindow.loadURL(url);
 
   overlayWindow.on("blur", () => {
@@ -106,7 +105,8 @@ app.whenReady().then(async () => {
   createTray();
 
   if (app.isPackaged) {
-    autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+    // auto-update disabled until first GitHub release is published
+    // autoUpdater.checkForUpdatesAndNotify().catch(() => {});
   }
 
   globalShortcut.register("CmdOrCtrl+Shift+S", () => {
