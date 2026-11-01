@@ -58,7 +58,7 @@ function createMainWindow() {
     else {
         mainWindow.loadFile(node_path_1.default.join(process.resourcesPath, "app.asar.unpacked", "bundle", "web", "out", "index.html"));
     }
-    mainWindow.once("ready-to-show", () => mainWindow?.show());
+    mainWindow.once("ready-to-show", () => { });
 }
 function createOverlayWindow() {
     const { width } = electron_1.screen.getPrimaryDisplay().workAreaSize;
@@ -91,6 +91,18 @@ function createTray() {
     const icon = electron_1.nativeImage.createFromDataURL("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik04IDJDMTAuNzYxNCAyIDEzIDQuMjM4NTggMTMgNjdDMTMgOS43NjE0MiAxMC43NjE0IDEyIDggMTJDMNS4yMzg1OCAxMiAzIDkuNzYxNDIgMyA3QzMgNC4yMzg1OCA1LjIzODU4IDIgOCAyWk04IDQuNEM5LjEwNDU3IDQuNCAxMCA1LjUwNDU3IDEwIDZDMTAgNi40OTU0MyA5LjEwNDU3IDcuNiA4IDcuNkM2Ljg5NTQzIDcuNiA2IDYuNDk1NDMgNiA2QzYgNS41MDQ1NyA2Ljg5NTQzIDQuNCA4IDQuNlaIiBmaWxsPSIjMjJjNTVlIi8+Cjwvc3ZnPgo=");
     tray = new electron_1.Tray(icon);
     tray.setToolTip("Angel-Ai — Invisible Assistant");
+    const contextMenu = electron_1.Menu.buildFromTemplate([
+        { label: "Toggle Overlay", click: () => { if (overlayWindow)
+                overlayWindow.isVisible() ? overlayWindow.hide() : overlayWindow.show(); } },
+        { label: "Toggle Main Window", click: () => { if (mainWindow)
+                mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show(); } },
+        { type: "separator" },
+        { label: "Show Both", click: () => { overlayWindow?.show(); mainWindow?.show(); } },
+        { label: "Hide All", click: () => { overlayWindow?.hide(); mainWindow?.hide(); } },
+        { type: "separator" },
+        { label: "Quit", click: () => electron_1.app.quit() },
+    ]);
+    tray.setContextMenu(contextMenu);
     tray.on("click", () => {
         if (overlayWindow)
             overlayWindow.isVisible() ? overlayWindow.hide() : overlayWindow.show();
@@ -103,6 +115,8 @@ electron_1.app.whenReady().then(async () => {
     createMainWindow();
     createOverlayWindow();
     createTray();
+    // Show only the overlay on launch; main window stays hidden until requested via tray.
+    overlayWindow?.show();
     if (electron_1.app.isPackaged) {
         // auto-update disabled until first GitHub release is published
         // autoUpdater.checkForUpdatesAndNotify().catch(() => {});

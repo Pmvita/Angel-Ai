@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, globalShortcut, Tray, nativeImage, screen, shell, desktopCapturer, utilityProcess } from "electron";
+import { app, BrowserWindow, ipcMain, globalShortcut, Tray, nativeImage, screen, shell, desktopCapturer, utilityProcess, Menu } from "electron";
 import path from "node:path";
 import { spawn, ChildProcess } from "node:child_process";
 import Store from "electron-store";
@@ -59,7 +59,7 @@ function createMainWindow() {
     mainWindow.loadFile(path.join(process.resourcesPath, "app.asar.unpacked", "bundle", "web", "out", "index.html"));
   }
 
-  mainWindow.once("ready-to-show", () => mainWindow?.show());
+  mainWindow.once("ready-to-show", () => { /* keep hidden; shown via tray */ });
 }
 
 function createOverlayWindow() {
@@ -99,6 +99,18 @@ function createTray() {
   );
   tray = new Tray(icon);
   tray.setToolTip("Angel-Ai — Invisible Assistant");
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: "Toggle Overlay", click: () => { if (overlayWindow) overlayWindow.isVisible() ? overlayWindow.hide() : overlayWindow.show(); } },
+    { label: "Toggle Main Window", click: () => { if (mainWindow) mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show(); } },
+    { type: "separator" },
+    { label: "Show Both", click: () => { overlayWindow?.show(); mainWindow?.show(); } },
+    { label: "Hide All", click: () => { overlayWindow?.hide(); mainWindow?.hide(); } },
+    { type: "separator" },
+    { label: "Quit", click: () => app.quit() },
+  ]);
+  tray.setContextMenu(contextMenu);
+
   tray.on("click", () => {
     if (overlayWindow) overlayWindow.isVisible() ? overlayWindow.hide() : overlayWindow.show();
   });
@@ -111,6 +123,8 @@ app.whenReady().then(async () => {
   createMainWindow();
   createOverlayWindow();
   createTray();
+  // Show only the overlay on launch; main window stays hidden until requested via tray.
+  overlayWindow?.show();
 
   if (app.isPackaged) {
     // auto-update disabled until first GitHub release is published

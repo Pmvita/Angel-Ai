@@ -245,7 +245,7 @@ export default function OverlayPage() {
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-6 right-6 glass-panel rounded-xl p-2 z-[99999] flex items-center gap-2 cursor-pointer" onClick={() => setIsMinimized(false)}>
+      <div className="fixed bottom-6 right-6 bg-[var(--surface)] border border-[var(--border)] rounded-xl p-2 z-[99999] flex items-center gap-2 cursor-pointer" onClick={() => setIsMinimized(false)}>
         <Button variant="ghost" size="sm" onClick={() => setIsMinimized(false)}>Open angel</Button>
         <Badge variant={settings.killSwitchEnabled ? "destructive" : "success"}>
           {settings.killSwitchEnabled ? "KILLSWITCH" : status}
@@ -256,11 +256,11 @@ export default function OverlayPage() {
 
   return (
     <main className="h-screen w-screen overflow-hidden flex flex-col">
-      <header className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-black/80 backdrop-blur">
+      <header className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-[var(--surface)] ">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold shadow-[0_0_20px_rgba(99,102,241,0.4)]">A</div>
+          <div className="w-8 h-8 rounded-md bg-[var(--primary)] flex items-center justify-center text-white font-semibold text-sm">A</div>
           <div>
-            <h1 className="text-sm font-semibold tracking-tight gradient-text">Angel-Ai</h1>
+            <h1 className="text-sm font-semibold tracking-tight text-[var(--text)]">Angel-Ai</h1>
             <p className="text-xs text-white/40">{status.toUpperCase()} · OVERLAY ACTIVE</p>
           </div>
         </div>
@@ -274,13 +274,13 @@ export default function OverlayPage() {
       </header>
 
       <div className="flex-1 overflow-hidden flex">
-        <nav className="w-20 border-r border-white/10 bg-black/70 p-2 flex flex-col gap-1">
+        <nav className="w-20 border-r border-white/10 bg-[var(--surface)] p-2 flex flex-col gap-1">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-                tab === t.id ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30" : "text-white/60 hover:bg-white/5"
+                tab === t.id ? "bg-[var(--primary)]/20 text-[var(--muted)] border border-[var(--primary)]/30" : "text-white/60 hover:bg-white/5"
               }`}
             >
               <t.icon className="w-4 h-4" />
@@ -308,8 +308,8 @@ export default function OverlayPage() {
 
               {settings.realtimeTranslation && (
                 <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-indigo-400" />
-                  <span className="text-xs text-indigo-400">Real-time translation to {targetLanguage.toUpperCase()}</span>
+                  <Globe className="w-4 h-4 text-[var(--muted)]" />
+                  <span className="text-xs text-[var(--muted)]">Real-time translation to {targetLanguage.toUpperCase()}</span>
                 </div>
               )}
 
@@ -320,13 +320,13 @@ export default function OverlayPage() {
                   transcript.map((seg) => {
                     const trans = translations.find((t: any) => t.sourceSegmentId === seg.id);
                     return (
-                      <div key={seg.id} className={`flex gap-3 animate-fade-in ${seg.isHighlighted ? "bg-indigo-500/10" : ""}`}>
+                      <div key={seg.id} className={`flex gap-3 animate-fade-in ${seg.isHighlighted ? "bg-[var(--primary)]/10" : ""}`}>
                         <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold border border-white/20 bg-white/10">
                           {seg.speaker.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1">
                           <div className="text-xs text-white/50">{new Date(seg.timestamp).toLocaleTimeString()}</div>
-                          <div className={`text-sm ${seg.isHighlighted ? "text-indigo-400 font-semibold" : "text-white/90"}`}>{seg.text}</div>
+                          <div className={`text-sm ${seg.isHighlighted ? "text-[var(--muted)] font-semibold" : "text-white/90"}`}>{seg.text}</div>
                           {trans && (
                             <div className="text-xs text-white/40 font-mono mt-1 italic">{`→ ${trans.translatedText}`}</div>
                           )}
@@ -348,11 +348,11 @@ export default function OverlayPage() {
               {vision ? (
                 <Card className="space-y-3">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3 rounded-lg border border-white/10 bg-black/40">
+                    <div className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
                       <div className="text-xs text-white/50 uppercase tracking-wider">Summary</div>
                       <p className="text-sm text-white/90 mt-1">{vision.summary}</p>
                     </div>
-                    <div className="p-3 rounded-lg border border-white/10 bg-black/40">
+                    <div className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
                       <div className="text-xs text-white/50 uppercase tracking-wider">Action Items</div>
                       <ul className="text-sm text-white/90 mt-1 space-y-1 list-disc list-inside">
                         {vision.actionItems.map((item, i) => (
@@ -361,7 +361,7 @@ export default function OverlayPage() {
                       </ul>
                     </div>
                   </div>
-                  <div className="p-3 rounded-lg border border-white/10 bg-black/40">
+                  <div className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
                     <div className="text-xs text-white/50 uppercase tracking-wider">Key Points</div>
                     <ul className="text-sm text-white/90 mt-1 space-y-1 list-disc list-inside">
                       {vision.keyPoints.map((p, i) => (
@@ -370,14 +370,14 @@ export default function OverlayPage() {
                     </ul>
                   </div>
                   {vision.detectedText && (
-                    <div className="p-3 rounded-lg border border-white/10 bg-black/40">
+                    <div className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
                       <div className="text-xs text-white/50 uppercase tracking-wider">Detected Text</div>
                       <p className="text-sm text-white/70 font-mono mt-1 truncate">{vision.detectedText}</p>
                     </div>
                   )}
                 </Card>
               ) : (
-                <div className="h-64 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-white/20 bg-black/30 text-center">
+                <div className="h-64 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-white/20 bg-[var(--raised)] text-center">
                   <EyeOff className="w-12 h-12 text-white/20 mb-3" />
                   <p className="text-white/60 text-sm">No screen analysis yet. Analysis runs automatically while listening.</p>
                 </div>
@@ -394,7 +394,7 @@ export default function OverlayPage() {
               <div className="space-y-3">
                 <div className="relative">
                   <input
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     placeholder="Ask a question about the meeting..."
                     value={newQuestion}
                     onChange={(e) => setNewQuestion(e.target.value)}
@@ -410,14 +410,14 @@ export default function OverlayPage() {
                     <p className="text-center text-white/40 text-sm py-8">Ask questions about the conversation in real time.</p>
                   ) : (
                     questions.map((q) => (
-                      <div key={q.id} className={`p-3 rounded-lg border border-white/10 animate-fade-in ${q.status === "answered" ? "bg-indigo-500/10" : q.status === "error" ? "bg-rose-500/10" : "bg-black/30"}`}>
+                      <div key={q.id} className={`p-3 rounded-lg border border-white/10 animate-fade-in ${q.status === "answered" ? "bg-[var(--primary)]/10" : q.status === "error" ? "bg-rose-500/10" : "bg-[var(--raised)]"}`}>
                         <div className="flex justify-between items-start mb-1">
                           <span className="text-xs font-medium text-white/90">You</span>
                           <span className="text-xs text-white/50">{new Date(q.timestamp).toLocaleTimeString()}</span>
                         </div>
                         <div className="text-sm text-white/80 mb-2">{q.text}</div>
                         {q.answer && (
-                          <div className="text-sm text-indigo-300 border-l-2 border-indigo-500 pl-3 mt-2">{q.answer}</div>
+                          <div className="text-sm text-[var(--muted)] border-l-2 border-[var(--primary)] pl-3 mt-2">{q.answer}</div>
                         )}
                         {q.status === "error" && <span className="text-xs text-rose-400">Failed to get answer</span>}
                       </div>
@@ -437,7 +437,7 @@ export default function OverlayPage() {
               <div className="space-y-3">
                 <div className="relative">
                   <input
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     placeholder="Add a manual note..."
                     value={newNote}
                     onChange={(e) => setNewNote(e.target.value)}
@@ -459,7 +459,7 @@ export default function OverlayPage() {
                     <p className="text-center text-white/40 text-sm py-8">No notes yet. Notes are captured automatically and manually.</p>
                   ) : (
                     notes.map((n) => (
-                      <div key={n.id} className={`p-3 rounded-lg border border-white/10 bg-black/40 animate-fade-in ${n.pinned ? "border-indigo-500/40" : ""}`}>
+                      <div key={n.id} className={`p-3 rounded-lg border border-white/10 bg-[var(--raised)] animate-fade-in ${n.pinned ? "border-[var(--primary)]/40" : ""}`}>
                         <div className="flex justify-between items-start mb-2">
                           <span className="text-xs font-medium text-white/90">{n.type === "auto" ? "Auto" : "Manual"}</span>
                           <span className="text-xs text-white/50">{new Date(n.updatedAt).toLocaleTimeString()}</span>
@@ -492,7 +492,7 @@ export default function OverlayPage() {
                   <p className="text-center text-white/40 text-sm py-8">No activity yet.</p>
                 ) : (
                   activity.map((ev: any) => (
-                    <div key={ev.id} className="p-3 rounded-lg border border-white/10 bg-black/30">
+                    <div key={ev.id} className="p-3 rounded-lg border border-white/10 bg-[var(--raised)]">
                       <div className="flex justify-between items-start mb-1">
                         <span className="text-xs font-medium text-white/70">{ev.type}</span>
                         <span className="text-xs text-white/40">{new Date(ev.timestamp).toLocaleTimeString()}</span>
@@ -518,7 +518,7 @@ export default function OverlayPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-white/70">AI Provider</label>
                   <select
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     value={settings.provider}
                     onChange={(e) => {
                       const p = e.target.value as any;
@@ -534,7 +534,7 @@ export default function OverlayPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-white/70">Model</label>
                   <input
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     value={settings.model}
                     onChange={(e) => setSettings({ ...settings, model: e.target.value })}
                   />
@@ -543,7 +543,7 @@ export default function OverlayPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-white/70">API Key</label>
                   <input
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     type="password"
                     value={settings.apiKey || ""}
                     onChange={(e) => setSettings({ ...settings, apiKey: e.target.value })}
@@ -554,7 +554,7 @@ export default function OverlayPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-white/70">Base URL</label>
                   <input
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     value={settings.baseUrl || ""}
                     onChange={(e) => setSettings({ ...settings, baseUrl: e.target.value })}
                     placeholder="https://api.openai.com/v1"
@@ -564,7 +564,7 @@ export default function OverlayPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-white/70">System Prompt</label>
                   <textarea
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     rows={3}
                     value={settings.systemPrompt}
                     onChange={(e) => setSettings({ ...settings, systemPrompt: e.target.value })}
@@ -575,7 +575,7 @@ export default function OverlayPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-white/70">Language</label>
                   <select
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     value={settings.language}
                     onChange={(e) => setSettings({ ...settings, language: e.target.value })}
                   >
@@ -591,7 +591,7 @@ export default function OverlayPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-white/70">Translation Target Language</label>
                   <select
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     value={targetLanguage}
                     onChange={(e) => setTargetLanguage(e.target.value)}
                   >
@@ -614,7 +614,7 @@ export default function OverlayPage() {
                 <div className="space-y-2">
                   <label className="text-xs font-medium text-white/70">Global Shortcut</label>
                   <input
-                    className="w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-lg border border-white/20 bg-[var(--raised)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                     value={settings.globalShortcut}
                     onChange={(e) => setSettings({ ...settings, globalShortcut: e.target.value })}
                   />
@@ -623,11 +623,11 @@ export default function OverlayPage() {
                 <div className="pt-4 border-t border-white/10 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-white/70">License</span>
-                    <span className={`text-xs ${license ? "text-indigo-400" : "text-white/40"}`}>{license ? "Activated" : "Free tier"}</span>
+                    <span className={`text-xs ${license ? "text-[var(--muted)]" : "text-white/40"}`}>{license ? "Activated" : "Free tier"}</span>
                   </div>
                   {!license && (
                     <button
-                      className="w-full py-2 rounded-lg bg-indigo-500 text-black font-semibold hover:bg-indigo-400"
+                      className="w-full py-2 rounded-lg bg-[var(--primary)] text-black font-semibold hover:bg-[var(--muted)]"
                       onClick={async () => {
                         const api = (window as any).angelApi;
                         const sid = `dev-${Date.now()}`;
@@ -683,7 +683,7 @@ export default function OverlayPage() {
         </div>
       </div>
 
-      <footer className="px-4 py-2 border-t border-white/10 bg-black/80 text-[10px] text-white/40 flex justify-between">
+      <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
         <div>Angel-Ai v2.0.0 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
