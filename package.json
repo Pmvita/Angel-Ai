@@ -2,7 +2,7 @@
   "name": "angel-ai-clone",
   "private": true,
   "description": "Angel-Ai clone — invisible real-time AI assistant for interviews and meetings (Listen, Vision, Ask, Notes) with extra features",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "packageManager": "npm@10.5.0",
   "workspaces": [
     "apps/web",
