@@ -96,7 +96,7 @@ export class LLMService {
           max_tokens: 1000,
         });
         const rawContent = completion.choices[0]?.message?.content || "{}";
-        const content = rawContent.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+        const content = rawContent.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
         try {
           const parsed = JSON.parse(content);
           return { summary: parsed.summary || content, keyPoints: parsed.keyPoints || [], actionItems: parsed.actionItems || [], detectedText: parsed.detectedText || undefined };
@@ -113,7 +113,7 @@ export class LLMService {
           messages: [{ role: "user", content: [{ type: "text", text: prompt }, { type: "image", source: { type: "base64", media_type: "image/png", data: imageBase64 } }] }],
         });
         const rawContent = (msg.content[0] as any).text || "{}";
-        const content = rawContent.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+        const content = rawContent.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
         try {
           const parsed = JSON.parse(content);
           return { summary: parsed.summary || content, keyPoints: parsed.keyPoints || [], actionItems: parsed.actionItems || [], detectedText: parsed.detectedText || undefined };
@@ -125,7 +125,7 @@ export class LLMService {
         const model = this.google!.getGenerativeModel({ model: this.config.model });
         const result = await model.generateContent([prompt, { inlineData: { data: imageBase64, mimeType: "image/png" } }]);
         const rawContent = result.response.text() || "{}";
-        const content = rawContent.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+        const content = rawContent.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
         try {
           const parsed = JSON.parse(content);
           return { summary: parsed.summary || content, keyPoints: parsed.keyPoints || [], actionItems: parsed.actionItems || [], detectedText: parsed.detectedText || undefined };

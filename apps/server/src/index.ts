@@ -18,7 +18,7 @@ const http = createServer(app);
 const io = new IOServer(http, { cors: { origin: "*" } });
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 app.use("/exports", express.static(path.join(process.env.angel_DATA_DIR || process.cwd(), "exports")));
 
 const PORT = Number(process.env.PORT || 4000);
@@ -160,7 +160,11 @@ app.get("/api/sessions/:id/vision", (req, res) => {
   const rows = store.query(COLLECTIONS.VISION, (r: any) => r.session_id === req.params.id).sort(
     (a: any, b: any) => (a.timestamp || "").localeCompare(b.timestamp || "")
   );
-  res.json(rows);
+  res.json(rows.map((r: any) => ({
+    ...r,
+    keyPoints: typeof r.keyPoints === "string" ? JSON.parse(r.keyPoints) : (r.keyPoints || []),
+    actionItems: typeof r.actionItems === "string" ? JSON.parse(r.actionItems) : (r.actionItems || []),
+  })));
 });
 
 app.post("/api/vision", async (req, res) => {
@@ -258,6 +262,15 @@ app.post("/api/notes", (req, res) => {
   io.emit("note.created", note);
   sessionService.addActivityEvent(sessionId, "note.created", `Note added: ${content.slice(0, 60)}`, { noteId: note.id });
   res.json(note);
+});
+
+app.get("/api/sessions/:id/notes", (req, res) => {
+  const rows = sessionService.getNotes(req.params.id);
+  res.json(rows.map((r: any) => ({
+    ...r,
+    tags: typeof r.tags === "string" ? JSON.parse(r.tags) : (r.tags || []),
+    pinned: !!r.pinned,
+  })));
 });
 
 app.post("/api/checkout", async (req, res) => {
