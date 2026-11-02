@@ -7,7 +7,7 @@ const EXPORT_DIR = path.join(process.env.angel_DATA_DIR || process.cwd(), "expor
 mkdirSync(EXPORT_DIR, { recursive: true });
 
 export class ExportService {
-  async createJob(sessionId: string, format: string) {
+  createJob(sessionId: string, format: string) {
     const id = uuidv4();
     const now = new Date().toISOString();
     store.insert(COLLECTIONS.EXPORTS, { id, session_id: sessionId, format, status: "queued", created_at: now } as any);
