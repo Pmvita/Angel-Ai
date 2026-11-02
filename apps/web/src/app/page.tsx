@@ -169,6 +169,7 @@ export default function OverlayPage() {
       setStatus("listening");
       // Client-side speech capture (Web Speech API) -> inject into server pipeline
       const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (!SR) showToast("Speech recognition not supported in this browser. Use Chrome or Edge.", "error");
       if (SR) {
         const rec = new SR();
         rec.continuous = true;
@@ -752,7 +753,7 @@ export default function OverlayPage() {
         </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.1.5 · Invisible Assistant</div>
+        <div>Angel-Ai v2.1.6 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />

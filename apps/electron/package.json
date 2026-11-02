@@ -1,7 +1,7 @@
 {
   "name": "@angel/electron",
   "productName": "Angel-Ai",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "Angel-Ai — invisible real-time AI assistant desktop app",
   "main": "./dist/main.js",
   "private": true,
