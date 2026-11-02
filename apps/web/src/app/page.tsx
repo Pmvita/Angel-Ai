@@ -137,6 +137,12 @@ export default function OverlayPage() {
       fetch(`${API_BASE}/api/sessions/${sessionRef.current}/translations`)
         .then((r) => r.json())
         .then((data) => setTranslations(data));
+      fetch(`${API_BASE}/api/sessions/${sessionRef.current}/transcript`)
+        .then((r) => r.json())
+        .then((data) => setTranscript(Array.isArray(data) ? data : []));
+      fetch(`${API_BASE}/api/sessions/${sessionRef.current}/notes`)
+        .then((r) => r.json())
+        .then((data) => setNotes(Array.isArray(data) ? data : []));
     }
   }, [sessionId]);
 
@@ -732,7 +738,7 @@ export default function OverlayPage() {
         </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.1.2 · Invisible Assistant</div>
+        <div>Angel-Ai v2.1.3 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />

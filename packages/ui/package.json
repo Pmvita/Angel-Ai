@@ -1,6 +1,6 @@
 {
   "name": "@angel/ui",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "private": true,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

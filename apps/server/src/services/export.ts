@@ -44,7 +44,13 @@ export class ExportService {
         writeFileSync(filePath, md);
       } else if (format === "pdf") {
         // Minimal PDF text fallback (jspdf would be used in browser; here we write a text-based PDF placeholder)
-        writeFileSync(filePath, `%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\nstartxref\n0\n%%EOF\n`);
+        const pdfLines = ["Meeting Transcript Export", "========================", ""];
+        for (const r of rows) pdfLines.push("[" + new Date(r.timestamp).toLocaleTimeString() + "] " + r.speaker + ": " + r.text);
+        pdfLines.push("", "Notes:");
+        for (const n of notes) pdfLines.push("- [" + n.type + "] " + n.content);
+        pdfLines.push("", "Vision Analysis:");
+        for (const v of visions) pdfLines.push("- " + v.summary);
+        writeFileSync(filePath, pdfLines.join("\n"));
       } else if (format === "txt") {
         let txt = "";
         for (const r of rows) txt += `[${new Date(r.timestamp).toLocaleTimeString()}] ${r.speaker}: ${r.text}\n`;
