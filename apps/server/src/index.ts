@@ -1,4 +1,5 @@
 import express from "express";
+import { z } from "zod";
 import cors from "cors";
 import { createServer } from "node:http";
 import { Server as IOServer } from "socket.io";
@@ -130,7 +131,10 @@ app.post("/api/auth/login", (req, res) => {
 
 // Sessions
 app.get("/api/sessions", (_req, res) => res.json(sessionService.list()));
+const SessionSchema = z.object({ app: z.string().optional() });
 app.post("/api/sessions", (req, res) => {
+  const parsed = SessionSchema.safeParse(req.body || {});
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { title, app: appName, windowTitle } = req.body || {};
   const s = sessionService.create(title || "Untitled Session", appName, windowTitle);
   io.emit("session.created", { sessionId: s.id, status: s.status });
@@ -272,7 +276,10 @@ app.post("/api/notes/auto", async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+const NoteSchema = z.object({ sessionId: z.string(), content: z.string(), type: z.string().optional(), tags: z.array(z.string()).optional() });
 app.post("/api/notes", (req, res) => {
+  const parsed = NoteSchema.safeParse(req.body || {});
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { sessionId, content, type = "manual", tags } = req.body || {};
   if (!sessionId || !content) return res.status(400).json({ error: "Missing sessionId or content" });
   const now = new Date().toISOString();
@@ -315,7 +322,10 @@ app.post("/api/checkout", async (req, res) => {
 });
 
 // Export
+const ExportSchema = z.object({ sessionId: z.string(), format: z.enum(["json", "txt", "md", "pdf", "markdown"]) });
 app.post("/api/export", (req, res) => {
+  const parsed = ExportSchema.safeParse(req.body || {});
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { sessionId, format } = req.body || {};
   if (!sessionId || !format) return res.status(400).json({ error: "Missing sessionId or format" });
   const job = exportService.createJob(sessionId, format);

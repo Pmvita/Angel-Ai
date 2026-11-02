@@ -1,4 +1,5 @@
 import { writeFileSync, mkdirSync } from "node:fs";
+import { jsPDF } from "jspdf";
 import path from "node:path";
 import { store, COLLECTIONS } from "../db/index";
 import { v4 as uuidv4 } from "uuid";
@@ -43,14 +44,48 @@ export class ExportService {
         for (const v of visions) md += `- ${v.summary}\n`;
         writeFileSync(filePath, md);
       } else if (format === "pdf") {
-        // Minimal PDF text fallback (jspdf would be used in browser; here we write a text-based PDF placeholder)
-        const pdfLines = ["Meeting Transcript Export", "========================", ""];
-        for (const r of rows) pdfLines.push("[" + new Date(r.timestamp).toLocaleTimeString() + "] " + r.speaker + ": " + r.text);
-        pdfLines.push("", "Notes:");
-        for (const n of notes) pdfLines.push("- [" + n.type + "] " + n.content);
-        pdfLines.push("", "Vision Analysis:");
-        for (const v of visions) pdfLines.push("- " + v.summary);
-        writeFileSync(filePath, pdfLines.join("\n"));
+        const doc = new jsPDF();
+        let y = 20;
+        doc.setFontSize(16);
+        doc.text("Meeting Transcript Export", 20, y);
+        y += 10;
+        doc.setFontSize(10);
+        for (const r of rows) {
+          const line = `[${new Date(r.timestamp).toLocaleTimeString()}] ${r.speaker}: ${r.text}`;
+          const splitLines = doc.splitTextToSize(line, 170);
+          for (const l of splitLines) {
+            if (y > 280) { doc.addPage(); y = 20; }
+            doc.text(l, 20, y);
+            y += 6;
+          }
+        }
+        y += 5;
+        doc.text("Notes:", 20, y);
+        y += 6;
+        for (const n of notes) {
+          const line = `- [${n.type}] ${n.content}`;
+          const splitLines = doc.splitTextToSize(line, 170);
+          for (const l of splitLines) {
+            if (y > 280) { doc.addPage(); y = 20; }
+            doc.text(l, 20, y);
+            y += 6;
+          }
+        }
+        y += 5;
+        doc.text("Vision Analysis:", 20, y);
+        y += 6;
+        for (const v of visions) {
+          const line = `- ${v.summary}`;
+          const splitLines = doc.splitTextToSize(line, 170);
+          for (const l of splitLines) {
+            if (y > 280) { doc.addPage(); y = 20; }
+            doc.text(l, 20, y);
+            y += 6;
+          }
+        }
+        const pdfOutput = doc.output("arraybuffer");
+        writeFileSync(filePath, Buffer.from(pdfOutput));
+
       } else if (format === "txt") {
         let txt = "";
         for (const r of rows) txt += `[${new Date(r.timestamp).toLocaleTimeString()}] ${r.speaker}: ${r.text}\n`;

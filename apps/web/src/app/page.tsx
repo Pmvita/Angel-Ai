@@ -59,8 +59,19 @@ export default function OverlayPage() {
       api.getLicense().then((l: string | null) => setLicenseState(l));
     }
   }, []);
+  useEffect(() => {
+    fetch(`${API_BASE}/api/settings`)
+      .then((r) => r.json())
+      .then((data) => { if (data && !data.error) setSettings(data); else showToast("Failed to load settings", "error"); })
+      .catch(() => showToast("Failed to load settings", "error"));
+  }, []);
   const sessionRef = useRef<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "error" | "success" } | null>(null);
+  const showToast = useCallback((message: string, type: "error" | "success" = "error") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  }, []);
   const wsRef = useRef<any>(null);
 
   useEffect(() => {
@@ -741,7 +752,7 @@ export default function OverlayPage() {
         </div>
 
       <footer className="px-4 py-2 border-t border-white/10 bg-[var(--surface)] text-[10px] text-white/40 flex justify-between">
-        <div>Angel-Ai v2.1.4 · Invisible Assistant</div>
+        <div>Angel-Ai v2.1.5 · Invisible Assistant</div>
         <div className="flex gap-3">
           <button className="text-white/60 hover:text-white" title="Export PDF" onClick={() => exportSession("pdf")}>
             <Download className="w-3 h-3" />
@@ -762,6 +773,13 @@ export default function OverlayPage() {
           )}
         </div>
       </footer>
+    {toast && (
+      <div className={`fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg text-sm font-medium shadow-lg transition-all ${
+        toast.type === "error" ? "bg-rose-500/90 text-white" : "bg-emerald-500/90 text-white"
+      }`}>
+        {toast.message}
+      </div>
+    )}
     </main>
   );
 }
