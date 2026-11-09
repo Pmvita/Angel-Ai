@@ -1,4 +1,4 @@
-# Angel-Ai
+﻿# Angel-Ai
 
 [![GitHub release](https://img.shields.io/github/v/release/Pmvita/Angel-Ai?style=flat-square&color=blue)](https://github.com/Pmvita/Angel-Ai/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -25,6 +25,8 @@
 | 📤 **Export** | Markdown, PDF, TXT, JSON, or email |
 | 🔒 **Kill Switch** | `Cmd/Ctrl+Shift+S` hides the overlay instantly |
 | 💳 **Activation** | Free download, one-time purchase to unlock full features |
+
+**Live web demo:** https://angel-ai-lemon.vercel.app
 
 ## 📥 Download
 
@@ -82,3 +84,4 @@ MIT — see [LICENSE](LICENSE) for details.
 ---
 
 Built with ❤️ by [Pierre Mvita](https://github.com/Pmvita)
+

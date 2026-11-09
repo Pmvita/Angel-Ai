@@ -1,0 +1,17 @@
+﻿node_modules
+**/node_modules
+.next
+**/.next
+.turbo
+**/.turbo
+apps/electron
+apps/server
+exports
+data
+.git
+*.exe
+*.dmg
+*.AppImage
+*.zip
+out
+**/out
