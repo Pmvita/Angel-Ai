@@ -1,5 +1,5 @@
 {
-  "name": "angel-ai-server",
+  "name": "angelai-server",
   "version": "2.1.6",
   "private": true,
   "main": "dist/index.js",

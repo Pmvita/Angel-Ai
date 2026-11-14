@@ -1,0 +1,46 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[931],{4715:function(e,t,r){Promise.resolve().then(r.bind(r,2883))},2883:function(e,t,r){"use strict";r.r(t),r.d(t,{default:function(){return m}});var a=r(7573),s=r(7659),n=r(7865),i=r(4856),l=r(5303),o=r(7631),d=r(1679);/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let c=(0,r(9565).Z)("Shield",[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",key:"oel41y"}]]),h=[{icon:n.Z,title:"Listen",body:"Live transcription from your mic so you never lose the thread mid-interview."},{icon:i.Z,title:"Vision",body:"Periodic screen capture with AI summary, key points, and action items."},{icon:l.Z,title:"Ask",body:"Question the live transcript with OpenAI, Anthropic, Google, OpenRouter, or local models."},{icon:o.Z,title:"Notes",body:"Manual and auto notes, translation, and export to Markdown, PDF, TXT, or email."}];function m(){return(0,a.jsxs)("main",{className:"min-h-screen mesh-bg text-[var(--text)]",children:[(0,a.jsx)("div",{className:"absolute inset-0 grid-fade pointer-events-none","aria-hidden":!0}),(0,a.jsxs)("header",{className:"relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-5",children:[(0,a.jsxs)("div",{className:"flex items-center gap-2.5",children:[(0,a.jsx)("div",{className:"flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--primary)] font-display text-sm font-bold text-[var(--ground)]",children:"A"}),(0,a.jsx)("span",{className:"font-display text-lg font-bold tracking-tight",children:"AngelAi"})]}),(0,a.jsxs)("nav",{className:"flex items-center gap-2 sm:gap-3",children:[(0,a.jsx)(s.default,{href:"/guide/",className:"hidden px-3 py-2 text-sm text-[var(--muted)] transition hover:text-[var(--text)] sm:inline",children:"Guide"}),(0,a.jsx)(s.default,{href:"/pricing/",className:"hidden px-3 py-2 text-sm text-[var(--muted)] transition hover:text-[var(--text)] sm:inline",children:"Pricing"}),(0,a.jsx)(s.default,{href:"/app/",className:"rounded-lg bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--ground)] transition hover:bg-[var(--primary-hover)]",children:"Open desk"})]})]}),(0,a.jsxs)("section",{className:"relative z-10 mx-auto flex max-w-6xl flex-col gap-10 px-6 pb-20 pt-16 md:pt-24",children:[(0,a.jsxs)("div",{className:"max-w-3xl",children:[(0,a.jsx)("p",{className:"mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--primary)]",children:"Interview & meeting desk"}),(0,a.jsx)("h1",{className:"font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl",children:"AngelAi"}),(0,a.jsx)("p",{className:"mt-5 max-w-xl text-base leading-relaxed text-[var(--body)] sm:text-lg",children:"Invisible real-time assistance for high-stakes conversations — listen, see the screen, ask the transcript, and ship notes before the call ends."}),(0,a.jsxs)("div",{className:"mt-8 flex flex-wrap items-center gap-3",children:[(0,a.jsx)(s.default,{href:"/app/",className:"inline-flex items-center gap-2 rounded-lg bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--ground)] transition hover:bg-[var(--primary-hover)]",children:"Try the web desk"}),(0,a.jsxs)("a",{href:"https://github.com/Pmvita/Angel-Ai/releases",className:"inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-5 py-3 text-sm font-semibold text-[var(--text)] transition hover:border-[var(--primary)]",children:[(0,a.jsx)(d.Z,{className:"h-4 w-4"}),"Download desktop"]})]}),(0,a.jsx)("p",{className:"mt-4 text-xs text-[var(--faint)]",children:"Full Listen / Vision / Ask / Notes needs the local API (`apps/server`) or the desktop app. The web desk falls back to a browser demo when the API is offline."})]}),(0,a.jsx)("div",{className:"grid gap-4 sm:grid-cols-2 lg:grid-cols-4",children:h.map(e=>(0,a.jsxs)("article",{className:"rounded-2xl border border-[var(--border)] bg-[var(--panel)]/80 p-5 backdrop-blur-sm transition hover:border-[var(--primary)]/40",children:[(0,a.jsx)(e.icon,{className:"mb-3 h-5 w-5 text-[var(--primary)]","aria-hidden":!0}),(0,a.jsx)("h2",{className:"font-display text-base font-bold",children:e.title}),(0,a.jsx)("p",{className:"mt-2 text-sm leading-relaxed text-[var(--muted)]",children:e.body})]},e.title))}),(0,a.jsxs)("aside",{className:"flex items-start gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)]/60 p-5",children:[(0,a.jsx)(c,{className:"mt-0.5 h-5 w-5 shrink-0 text-[var(--accent)]","aria-hidden":!0}),(0,a.jsxs)("div",{children:[(0,a.jsx)("h2",{className:"font-display text-sm font-bold",children:"Kill switch & screen-share caveat"}),(0,a.jsx)("p",{className:"mt-1 text-sm text-[var(--muted)]",children:"`Cmd/Ctrl+Shift+S` hides the overlay instantly. The window is visible to screen capture — hide it or move it to a non-shared monitor before sharing your screen."})]})]})]}),(0,a.jsxs)("footer",{className:"relative z-10 border-t border-[var(--border)] px-6 py-8 text-center text-xs text-[var(--faint)]",children:["AngelAi v2.1.6 \xb7 MIT \xb7"," ",(0,a.jsx)("a",{className:"text-[var(--muted)] hover:text-[var(--primary)]",href:"https://github.com/Pmvita/Angel-Ai",children:"GitHub"})]})]})}},9565:function(e,t,r){"use strict";r.d(t,{Z:function(){return o}});var a=r(7653);/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let s=e=>e.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase(),n=function(){for(var e=arguments.length,t=Array(e),r=0;r<e;r++)t[r]=arguments[r];return t.filter((e,t,r)=>!!e&&r.indexOf(e)===t).join(" ")};/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var i={xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:2,strokeLinecap:"round",strokeLinejoin:"round"};/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let l=(0,a.forwardRef)((e,t)=>{let{color:r="currentColor",size:s=24,strokeWidth:l=2,absoluteStrokeWidth:o,className:d="",children:c,iconNode:h,...m}=e;return(0,a.createElement)("svg",{ref:t,...i,width:s,height:s,stroke:r,strokeWidth:o?24*Number(l)/Number(s):l,className:n("lucide",d),...m},[...h.map(e=>{let[t,r]=e;return(0,a.createElement)(t,r)}),...Array.isArray(c)?c:[c]])}),o=(e,t)=>{let r=(0,a.forwardRef)((r,i)=>{let{className:o,...d}=r;return(0,a.createElement)(l,{ref:i,iconNode:t,className:n("lucide-".concat(s(e)),o),...d})});return r.displayName="".concat(e),r}},1679:function(e,t,r){"use strict";r.d(t,{Z:function(){return a}});/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let a=(0,r(9565).Z)("Download",[["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",key:"ih7n3h"}],["polyline",{points:"7 10 12 15 17 10",key:"2ggqvy"}],["line",{x1:"12",x2:"12",y1:"15",y2:"3",key:"1vk2je"}]])},4856:function(e,t,r){"use strict";r.d(t,{Z:function(){return a}});/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let a=(0,r(9565).Z)("Eye",[["path",{d:"M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z",key:"rwhkz3"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]])},7631:function(e,t,r){"use strict";r.d(t,{Z:function(){return a}});/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let a=(0,r(9565).Z)("FileText",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M10 9H8",key:"b1mrlr"}],["path",{d:"M16 13H8",key:"t4e002"}],["path",{d:"M16 17H8",key:"z1uh3a"}]])},5303:function(e,t,r){"use strict";r.d(t,{Z:function(){return a}});/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let a=(0,r(9565).Z)("MessageSquare",[["path",{d:"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",key:"1lielz"}]])},7865:function(e,t,r){"use strict";r.d(t,{Z:function(){return a}});/**
+ * @license lucide-react v0.390.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */let a=(0,r(9565).Z)("Mic",[["path",{d:"M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z",key:"131961"}],["path",{d:"M19 10v2a7 7 0 0 1-14 0v-2",key:"1vc78b"}],["line",{x1:"12",x2:"12",y1:"19",y2:"22",key:"x3vr5v"}]])},7659:function(e,t,r){"use strict";r.d(t,{default:function(){return s.a}});var a=r(5469),s=r.n(a)}},function(e){e.O(0,[469,293,286,744],function(){return e(e.s=4715)}),_N_E=e.O()}]);

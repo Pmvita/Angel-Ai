@@ -10,7 +10,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Angel-Ai, please report it responsibly:
+If you discover a security vulnerability in AngelAi, please report it responsibly:
 
 1. **Do not** open a public GitHub issue for security vulnerabilities.
 2. Email the maintainer at **Petermvita@hotmail.com** with:
@@ -26,4 +26,4 @@ If you discover a security vulnerability in Angel-Ai, please report it responsib
 - API keys are stored locally in `settings.json` on the user's machine. They are never transmitted to any server other than the configured LLM provider.
 - The app runs a local Express server on `localhost:4000`. This server is not exposed to the network.
 - Screen capture data is processed locally and sent only to the configured LLM provider for analysis.
-- No user data is collected or transmitted to Angel-Ai servers (there are none).
+- No user data is collected or transmitted to AngelAi servers (there are none).

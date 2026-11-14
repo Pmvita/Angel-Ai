@@ -119,7 +119,7 @@ app.post("/api/activate", async (req, res) => {
   }
 });
 
-app.get("/api/health", (_req, res) => res.json({ ok: true, service: "angel-ai-server" }));
+app.get("/api/health", (_req, res) => res.json({ ok: true, service: "angelai-server", product: "AngelAi" }));
 
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body || {};
@@ -399,12 +399,12 @@ io.on("connection", (socket) => {
     io.to(socket.id).emit("kill-switch", { enabled: settings.killSwitchEnabled });
   });
   socket.on("transcript.inject", (data: { sessionId: string; speaker: string; text: string }) => {
-    transcription.inject(data.speaker as any, data.text);
-    io.emit("transcript", { ...data, timestamp: new Date().toISOString() });
+    // Persist + broadcast once via transcription pipeline (avoid duplicate emit)
+    if (data?.text) transcription.inject(data.speaker as any, data.text);
   });
 });
 
 http.listen(PORT, () => {
-  console.log(`Angel-Ai server listening on http://localhost:${PORT}`);
+  console.log(`AngelAi server listening on http://localhost:${PORT}`);
 });
 

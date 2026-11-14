@@ -1,11 +1,11 @@
-# Contributing to Angel-Ai
+# Contributing to AngelAi
 
 Thank you for your interest in contributing! This project is primarily maintained by Pierre Mvita, but contributions are welcome.
 
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/Angel-Ai.git`
+2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/Angel-Ai.git` (product brand: **AngelAi**)
 3. Install dependencies: `npm install`
 4. Create a feature branch: `git checkout -b feature/your-feature`
 5. Make your changes

@@ -2,5 +2,7 @@
   "installCommand": "npm install",
   "buildCommand": "npx turbo run build --filter=@angel/web",
   "outputDirectory": "apps/web/out",
-  "framework": null
+  "framework": null,
+  "cleanUrls": true,
+  "trailingSlash": true
 }

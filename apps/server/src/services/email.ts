@@ -39,9 +39,9 @@ export class EmailExportService {
       }
 
       await transporter.sendMail({
-        from: process.env.SMTP_FROM || "noreply@angel-ai.local",
+        from: process.env.SMTP_FROM || "noreply@angelai.local",
         to,
-        subject: `Angel-Ai Export — Session ${sessionId.slice(0, 8)}`,
+        subject: `AngelAi Export — Session ${sessionId.slice(0, 8)}`,
         text: body,
         attachments: format === "pdf" ? [{ path: filePath }] : undefined,
       });
