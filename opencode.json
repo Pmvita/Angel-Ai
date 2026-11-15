@@ -1,0 +1,47 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "github": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-github"
+        ]
+      },
+      "filesystem": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "C:/Users/user/Desktop/MAIN/Projects/1) Full-Stack Engineering/angel-ai-clone"
+        ]
+      },
+      "sqlite": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@easy-mcps/sqlite-mcp-server",
+          "--db-path",
+          "C:/Users/user/Desktop/MAIN/Projects/1) Full-Stack Engineering/angel-ai-clone/data/angel.db"
+        ]
+      }
+    }
+  },
+  "plugins": [
+    "opencode-plugin-github",
+    "opencode-plugin-linear"
+  ],
+  "skills": [
+    "./.opencode/skills",
+    "~/.config/opencode/skills",
+    "https://raw.githubusercontent.com/anurag-panda-dev/opencode-skills/main/",
+    "https://raw.githubusercontent.com/kanjariyaraj/opencode-skills-hub/main/catalog/",
+    "https://raw.githubusercontent.com/Hcachild/opencode-skills/main/",
+    "https://raw.githubusercontent.com/open-hax/opencode-skills/main/.opencode/skills/",
+    "https://raw.githubusercontent.com/EdEngineering/opencode-awesome-skills/main/"
+  ]
+}
