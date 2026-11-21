@@ -194,6 +194,7 @@ export default function OverlayPage() {
     const api = (window as any).angelApi;
     if (!api?.captureScreen) return;
     const interval = setInterval(async () => {
+      if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
       try {
         const res = await api.captureScreen();
         if (res?.png) {
@@ -207,7 +208,7 @@ export default function OverlayPage() {
       } catch (e) {
         console.error("[vision] capture error:", e);
       }
-    }, settings.captureIntervalMs || 5000);
+    }, settings.captureIntervalMs || 30000);
     return () => clearInterval(interval);
   }, [status, settings.captureIntervalMs, demoMode]);
 
